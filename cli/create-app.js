@@ -135,12 +135,19 @@ const copyDir = (from, to) => {
 };
 
 const isTextFile = (filePath) => {
+  const baseName = path.basename(filePath);
+  if (baseName === "Dockerfile") return true;
+  if (baseName === ".dockerignore") return true;
+  if (baseName === ".gitignore") return true;
+  if (baseName === ".env" || baseName === ".env.example") return true;
+
   const ext = path.extname(filePath).toLowerCase();
   return [
     ".js",
     ".jsx",
     ".ts",
     ".tsx",
+    ".sh",
     ".json",
     ".md",
     ".txt",
@@ -150,7 +157,7 @@ const isTextFile = (filePath) => {
     ".xml",
     ".yml",
     ".yaml",
-    ".gitignore"
+    ".example"
   ].includes(ext);
 };
 
@@ -371,6 +378,13 @@ const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 })
   lines.push("dotnet restore");
   lines.push("dotnet build");
   lines.push("dotnet run --project src");
+  lines.push("```");
+  lines.push("");
+  lines.push("### WebApi (Docker)");
+  lines.push("```bash");
+  lines.push(`cd ${slug}/${slug}-webapi`);
+  lines.push("docker build -t webapi:dev .");
+  lines.push("docker run --rm -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=development webapi:dev");
   lines.push("```");
   lines.push("");
   lines.push("### Mobile");
