@@ -1,0 +1,10 @@
+# typescript
+*.tsbuildinfo
+node_modules/
+
+.env
+
+.expo/
+dist/
+web-build/
+

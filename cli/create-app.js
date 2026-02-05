@@ -338,61 +338,18 @@ const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 })
   lines.push("");
   lines.push("Bootstrap project generated from `5l-rn-bootstrap`.");
   lines.push("");
-  lines.push("## Required manual configuration");
+  lines.push("## Docs");
   lines.push("");
-  lines.push("### Mobile (`*-mobile`)");
-  lines.push("- Set `EXPO_PUBLIC_BUILD_ENVIRONMENT` to `development`, `staging`, or `production`.");
-  lines.push("- Fill placeholders in `*-mobile/src/providers/ConfigurationProvider.tsx`:");
-  lines.push("  - `PLACEHOLDER_WEBAPI_DEV_URL`, `PLACEHOLDER_WEBAPI_STG_URL`, `PLACEHOLDER_WEBAPI_PROD_URL`");
-  lines.push("  - Google `PLACEHOLDER_GOOGLE_*_CLIENT_ID_*` values (web + iOS client IDs)");
-  lines.push("- Fill placeholders in `*-mobile/app.config.ts`:");
-  lines.push("  - `PLACEHOLDER_IOS_URL_SCHEME_*` (Google reverse client ID for iOS)");
-  lines.push("  - `PLACEHOLDER_EAS_PROJECT_ID` (if using EAS)");
-  lines.push("  - `PLACEHOLDER_SENTRY_ORG` / `PLACEHOLDER_SENTRY_PROJECT` (if using Sentry)");
-  lines.push("");
-  lines.push("### WebApi (`*-webapi`)");
-  lines.push("- Set `ASPNETCORE_ENVIRONMENT` to `development`, `staging`, or `production`.");
-  lines.push("- Fill placeholders in `*-webapi/src/appsettings*.json`:");
-  lines.push("  - `Auth.GoogleClientId` (should match the mobile Google *web* client ID used to mint idTokens)");
-  lines.push("  - `Auth.JwtIssuer`, `Auth.JwtAudience`, `Auth.JwtSigningKey`");
-  lines.push("  - `Sentry.Dsn` (used in staging/production)");
-  lines.push("- `App.MobileAppBundleId` must match the iOS bundle id; scaffold sets it from the slug.");
-  if (withMongo) {
+  lines.push(`- Mobile: \`${slug}-mobile/README.md\``);
+  lines.push(`- WebApi: \`${slug}-webapi/README.md\``);
+
+  if (withMongo || withS3) {
     lines.push("");
-    lines.push("### Mongo (optional)");
-    lines.push("- Config: fill `Mongo` placeholders in `*-webapi/src/appsettings*.json`.");
-    lines.push("- Code: WebApi uses `MockMongoExampleService` by default. To enable real Mongo, uncomment `MongoExampleService` in `*-webapi/src/WebApplicationBuilderExtensions.cs`.");
+    lines.push("## Optional infra");
+    if (withMongo) lines.push("- Mongo example included.");
+    if (withS3) lines.push("- S3 example included.");
   }
-  if (withS3) {
-    lines.push("");
-    lines.push("### S3 (optional)");
-    lines.push("- Config: fill `S3` placeholders in `*-webapi/src/appsettings*.json`.");
-    lines.push("- Code: WebApi uses `MockS3ExampleService` by default. To enable real S3, uncomment `S3ExampleService` in `*-webapi/src/WebApplicationBuilderExtensions.cs`.");
-  }
-  lines.push("");
-  lines.push("## Run (scaffold-only)");
-  lines.push("");
-  lines.push("### WebApi");
-  lines.push("```bash");
-  lines.push(`cd ${slug}/${slug}-webapi`);
-  lines.push("dotnet restore");
-  lines.push("dotnet build");
-  lines.push("dotnet run --project src");
-  lines.push("```");
-  lines.push("");
-  lines.push("### WebApi (Docker)");
-  lines.push("```bash");
-  lines.push(`cd ${slug}/${slug}-webapi`);
-  lines.push("docker build -t webapi:dev .");
-  lines.push("docker run --rm -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=development webapi:dev");
-  lines.push("```");
-  lines.push("");
-  lines.push("### Mobile");
-  lines.push("```bash");
-  lines.push(`cd ${slug}/${slug}-mobile`);
-  lines.push("npm install");
-  lines.push("npm run ios");
-  lines.push("```");
+
   lines.push("");
   lines.push("## Projects");
   lines.push(`- WebApi: ${dotnetPrefix}.WebApi`);
