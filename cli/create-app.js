@@ -7,20 +7,15 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
 
 const usage = () => {
-  // Keep this short; detailed instructions live in repo README later.
-  console.log(
-    [
-      "Usage:",
-      "  node cli/create-app.js <slug> --auth <required|optional> [--with-mongo] [--with-s3]",
-      "",
-      "Slug:",
-      "  - Recommended: org-appname (e.g. acme-demoapp)",
-      "  - Allowed: appname (no dash) → dotnet prefix becomes Appname.*",
-      "",
-      "Example:",
-      "  node cli/create-app.js acme-demoapp --auth required --with-mongo --with-s3"
-    ].join("\n")
-  );
+  const helpPath = path.join(__dirname, "readme.help.md");
+  try {
+    const helpText = fs.readFileSync(helpPath, "utf8");
+    process.stdout.write(helpText.endsWith("\n") ? helpText : helpText + "\n");
+  } catch (error) {
+    console.log("Help text not found. Expected cli/readme.help.md.");
+    console.log("Basic usage:");
+    console.log("  node cli/create-app.js <slug> --auth <required|optional> [--output <path>] [--with-mongo] [--with-s3]");
+  }
 };
 
 const die = (message) => {
@@ -40,6 +35,9 @@ const parseSlug = (slug) => {
   }
 
   const normalized = slug.trim();
+  if (normalized.includes("/") || normalized.includes("\\")) {
+    die('Invalid slug. Use "--output" to control the destination directory.');
+  }
   const parts = normalized.split("-").filter(Boolean);
   if (parts.length === 0) {
     die(`Invalid slug "${slug}".`);
@@ -117,7 +115,19 @@ const parseArgs = (argv) => {
     die(`Invalid auth mode "${authMode}". Expected "required" or "optional".`);
   }
 
-  return { slug, authMode, withMongo, withS3 };
+  const outputIdx = args.indexOf("--output");
+  let outputDir = null;
+  if (outputIdx !== -1) {
+    if (outputIdx === args.length - 1) {
+      die('Missing required "--output <path>" value.');
+    }
+    outputDir = args[outputIdx + 1];
+    if (!outputDir || outputDir.trim() === "" || outputDir.startsWith("--")) {
+      die('Invalid "--output" value.');
+    }
+  }
+
+  return { slug, authMode, outputDir, withMongo, withS3 };
 };
 
 const copyDir = (from, to) => {
@@ -379,7 +389,7 @@ const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 })
 };
 
 const main = () => {
-  const { slug, authMode, withMongo, withS3 } = parseArgs(process.argv);
+  const { slug, authMode, outputDir, withMongo, withS3 } = parseArgs(process.argv);
   const names = parseSlug(slug);
 
   const templatesMobile = path.join(repoRoot, "templates", "mobile");
@@ -389,7 +399,14 @@ const main = () => {
     die("Missing templates. Expected `templates/mobile` and `templates/webapi` to exist.");
   }
 
-  const appRoot = path.resolve(process.cwd(), names.slug);
+  const outputBaseDir =
+    !outputDir || outputDir === "."
+      ? process.cwd()
+      : path.isAbsolute(outputDir)
+        ? outputDir
+        : path.resolve(process.cwd(), outputDir);
+
+  const appRoot = path.resolve(outputBaseDir, names.slug);
   if (fs.existsSync(appRoot)) {
     die(`Destination already exists: ${appRoot}`);
   }

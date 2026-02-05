@@ -3,8 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "create-app": "node cli/create-app.js",
-    "smoke-test": "node scripts/smoke-test.js"
+    "create-app": "node cli/create-app.js"
   }
 }
-
