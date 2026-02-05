@@ -1,4 +1,4 @@
-# 5l-rn-bootstrap
+# 5l-mobile-bootstrap
 
 ## Create a new app
 ```bash

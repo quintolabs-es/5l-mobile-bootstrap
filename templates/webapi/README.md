@@ -11,7 +11,7 @@
 ### `src/appsettings.[environment].json`
 
 - `Auth:GoogleClientId` — Google OAuth client id used to validate Google `idToken` 
-- `Sentry:Dsn` — Sentry DSN. Deep empty in development to disable Sentry.
+- `Sentry:Dsn` — Sentry DSN. Keep empty in development to disable Sentry.
 
 ### Optional infra (only if generated)
 

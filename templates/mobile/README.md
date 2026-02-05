@@ -1,10 +1,32 @@
 # __SLUG__ mobile
 
 ## Setup (first time)
+### Expo account
 
-See `readme.setup.md`.
+Create an Expo account: `https://expo.dev`
 
-## Configuration
+### EAS (first time)
+
+```bash
+npx eas-cli@16.32.0 login
+npx eas-cli@16.32.0 build:configure
+```
+
+### Channels
+
+```bash
+npx eas-cli@16.32.0 channel:create staging
+npx eas-cli@16.32.0 channel:create production
+```
+
+### iOS devices (internal distribution)
+
+```bash
+npx eas-cli@16.32.0 device:create
+```
+
+
+## Project configuration
 
 ```bash
 cp .env.example .env
@@ -31,11 +53,10 @@ cp .env.example .env
 
 - `PLACEHOLDER_SENTRY_DSN` — Sentry DSN (events in staging/production only)
 
-## Run locally (development)
+## Build dev client (required)
 
-To run the app, Expo Go is not enough, and a new build is required.
+Expo Go is not supported (native modules). You must build a dev client first.
 
-### Build a dev client
 ```bash
 npm install
 cp .env.example .env
@@ -43,9 +64,9 @@ npx eas-cli@16.32.0 build --platform ios --profile development
 npx eas-cli@16.32.0 build --platform android --profile development
 ```
 
-Then download it and install it in the mobile.
+Install the builds on your device/emulator.
 
-### Run locally
+## Run locally
 
 ```bash
 npm run start
@@ -58,9 +79,21 @@ EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npm run start
 EXPO_PUBLIC_BUILD_ENVIRONMENT=production npm run start
 ```
 
-## Build staging/production
+## Build staging
 
 ```bash
-EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npx eas-cli@16.32.0 build --platform all --profile staging|production
+EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npx eas-cli@16.32.0 build --platform all --profile staging
 ```
 
+## Build production
+
+```bash
+EXPO_PUBLIC_BUILD_ENVIRONMENT=production npx eas-cli@16.32.0 build --platform all --profile production
+```
+
+## Local native builds (if desired)
+
+```bash
+npx expo run:ios
+npx expo run:android
+```

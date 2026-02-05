@@ -336,7 +336,7 @@ const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 })
 
   lines.push(`# ${slug}`);
   lines.push("");
-  lines.push("Bootstrap project generated from `5l-rn-bootstrap`.");
+  lines.push("Bootstrap project generated from `5l-mobile-bootstrap`.");
   lines.push("");
   lines.push("## Docs");
   lines.push("");
