@@ -5,7 +5,7 @@ Clone the repo and cd into the root folder.
 ```bash
 npm run create-app -- <slug> --auth <required|optional> [--output <path>] [--with-mongo] [--with-s3]
 
-# e.g
+# e.g, create app in a folder next to `5l-mobile-bootstrap` folder
 npm run create-app -- org-coolapp --auth required --output .. --with-mongo --with-s3
 ```
 

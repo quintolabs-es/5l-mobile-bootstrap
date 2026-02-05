@@ -1,5 +1,7 @@
 # __SLUG__ WebApi
 
+.NET 10 WebApi intended to run in Docker. For deployment examples, see `build-push-img.sh` and `deploy-render.sh`.
+
 ## Configuration
 
 ### `src/appsettings.json`
@@ -45,4 +47,10 @@ docker run --rm -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=development __SLUG__-weba
 cp .env.example .env
 # edit .env
 bash build-push-img.sh
+```
+
+Optional (Render example):
+
+```bash
+bash deploy-render.sh --env staging
 ```

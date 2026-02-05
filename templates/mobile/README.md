@@ -1,5 +1,7 @@
 # __SLUG__ mobile
 
+React Native app built with Expo. Builds and distribution use EAS (Expo cloud) via the pinned `npx eas-cli@16.32.0` commands.
+
 ## Setup (first time)
 ### Expo account
 
@@ -20,25 +22,20 @@ npx eas-cli@16.32.0 channel:create production
 ```
 
 ### iOS devices (internal distribution)
-
+The ios builds need to be created with the specific list of iphones that will be able to install them. Ade device to the account so they can be targeted by the build.
 ```bash
 npx eas-cli@16.32.0 device:create
 ```
 
-
 ## Project configuration
 
-```bash
-cp .env.example .env
-```
-
-### `.env`
+### `.env` file (use .env.example)
 
 - `EXPO_PUBLIC_BUILD_ENVIRONMENT` — set to `development`; can also prefix commands with `EXPO_PUBLIC_BUILD_ENVIRONMENT=staging|production`
 
 ### `src/providers/ConfigurationProvider.tsx`
 
-- `PLACEHOLDER_WEBAPI_DEV_URL/STG/PROD` — WebApi base URL 
+- `PLACEHOLDER_WEBAPI_DEV_URL/STG/PROD` — WebApi base URL (use a deployed URL; `localhost` won't work on a real device)
 - `PLACEHOLDER_GOOGLE_WEB_CLIENT_ID_DEV/STG/PROD` — Google OAuth web client id 
 - `PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_DEV/STG/PROD` — Google OAuth iOS client id 
 
@@ -71,6 +68,8 @@ Install the builds on your device/emulator.
 ```bash
 npm run start
 ```
+
+Need a deployed WebApi? See `../__SLUG__-webapi/deploy-render.sh` (Render example) after publishing an image with `../__SLUG__-webapi/build-push-img.sh`.
 
 To run as staging/production locally, prefix the command:
 
