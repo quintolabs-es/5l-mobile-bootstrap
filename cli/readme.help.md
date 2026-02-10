@@ -15,3 +15,6 @@ Options:
                                 In particular, '--output ..' creates the app folder in current's parent, next to the current directory
   --with-mongo-s3-infra         Optional. Adds Mongo + S3 infra examples (GET /posts, POST /posts); uses mocks by default so it runs without infra
   -h, --help                    Show help: npm run create-app -- --help
+
+Notes:
+  - Creates a git repo in the generated app folder and commits an "initial commit. app created from template".

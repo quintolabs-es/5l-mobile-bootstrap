@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -141,6 +142,57 @@ const parseArgs = (argv) => {
 
 const copyDir = (from, to) => {
   fs.cpSync(from, to, { recursive: true, errorOnExist: false });
+};
+
+const runGit = (cwd, args) => {
+  const result = spawnSync("git", args, { cwd, encoding: "utf8" });
+  return {
+    ok: !result.error && result.status === 0,
+    error: result.error,
+    stdout: result.stdout ?? "",
+    stderr: result.stderr ?? ""
+  };
+};
+
+const initGitRepo = (appRoot) => {
+  if (fs.existsSync(path.join(appRoot, ".git"))) return;
+
+  const init = runGit(appRoot, ["init"]);
+  if (!init.ok) {
+    console.log("Skipped git init (git not available or init failed).");
+    return;
+  }
+
+  runGit(appRoot, ["add", "-A"]);
+
+  const commitMessage = "initial commit. app created from template";
+  const commit = runGit(appRoot, ["commit", "-m", commitMessage]);
+  if (!commit.ok) {
+    console.log("Git repo initialized, but the first commit failed.");
+    console.log("Run these commands inside the app folder:");
+    console.log("  git add -A");
+    console.log(`  git commit -m "${commitMessage}"`);
+  }
+};
+
+const selectMobileAppEntrypoint = (mobileRoot, authMode) => {
+  const requiredAppPath = path.join(mobileRoot, "App.required.tsx");
+  const optionalAppPath = path.join(mobileRoot, "App.optional.tsx");
+  const appTsxPath = path.join(mobileRoot, "App.tsx");
+
+  const sourceAppPath = authMode === "optional" ? optionalAppPath : requiredAppPath;
+  if (!fs.existsSync(sourceAppPath)) {
+    die(`Missing ${sourceAppPath}`);
+  }
+
+  fs.copyFileSync(sourceAppPath, appTsxPath);
+
+  if (fs.existsSync(requiredAppPath)) {
+    fs.unlinkSync(requiredAppPath);
+  }
+  if (fs.existsSync(optionalAppPath)) {
+    fs.unlinkSync(optionalAppPath);
+  }
 };
 
 const writeMobileEnvFileIfMissing = (mobileRoot) => {
@@ -411,6 +463,7 @@ const main = () => {
   const webapiRoot = path.join(appRoot, `${names.appId}-webapi`);
 
   copyDir(templatesMobile, mobileRoot);
+  selectMobileAppEntrypoint(mobileRoot, authMode);
   writeMobileEnvFileIfMissing(mobileRoot);
   copyDir(templatesWebapi, webapiRoot);
   applyWebapiOptionalOverlays(webapiRoot, { withMongo, withS3 });
@@ -435,6 +488,8 @@ const main = () => {
   updateWebApiOptionalRegistrations(path.join(webapiRoot, "src"), { withMongo, withS3 });
 
   writeRootReadme(appRoot, names, { withMongo, withS3 });
+
+  initGitRepo(appRoot);
 
   console.log(`Created ${names.appId}/`);
 };

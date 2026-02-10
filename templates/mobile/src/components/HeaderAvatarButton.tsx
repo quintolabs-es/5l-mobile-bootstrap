@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { authMode } from "../config/authMode";
 import { useAuth } from "../providers/AuthProvider";
 import LoginSlidingModal from "../screens/login/LoginSlidingModal";
 
@@ -24,14 +23,14 @@ const HeaderAvatarButton: React.FC = () => {
     if (isSignedIn) {
       return (currentUser?.nickName?.[0] ?? "U").toUpperCase();
     }
-    return "?";
+    return "⋯";
   }, [currentUser, isSignedIn]);
 
   const onPress = () => {
     if (isSignedIn) {
       return;
     }
-    if (authMode === "optional") {
+    if ("__AUTH_MODE__" === "optional") {
       setLoginVisible(true);
     }
   };
@@ -51,4 +50,3 @@ const HeaderAvatarButton: React.FC = () => {
 };
 
 export default HeaderAvatarButton;
-

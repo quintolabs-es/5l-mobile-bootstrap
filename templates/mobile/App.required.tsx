@@ -8,7 +8,6 @@ import initializeSentryIfIsNotDev from "./src/SentryLoggerInitializer";
 import { ConfigurationProvider } from "./src/providers/ConfigurationProvider";
 import { LoggerProvider } from "./src/providers/LoggerProvider";
 import { AuthProvider, useAuth } from "./src/providers/AuthProvider";
-import { authMode } from "./src/config/authMode";
 
 import HomeScreen from "./src/screens/home/HomeScreen";
 import LoginScreen from "./src/screens/login/LoginScreen";
@@ -24,7 +23,7 @@ const RootNavigator: React.FC = () => {
   const { currentUser } = useAuth();
   const isSignedIn = !!currentUser;
 
-  if (authMode === "required" && !isSignedIn) {
+  if (!isSignedIn) {
     return (
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -65,4 +64,3 @@ const SentryWrappedApp: React.FC = () => {
 };
 
 export default SentryWrappedApp;
-
