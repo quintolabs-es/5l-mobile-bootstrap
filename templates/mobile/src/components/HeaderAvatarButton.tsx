@@ -30,9 +30,7 @@ const HeaderAvatarButton: React.FC = () => {
     if (isSignedIn) {
       return;
     }
-    if ("__AUTH_MODE__" === "optional") {
-      setLoginVisible(true);
-    }
+    setLoginVisible(true);
   };
 
   return (

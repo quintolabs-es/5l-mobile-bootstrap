@@ -476,7 +476,6 @@ const main = () => {
     "__APP_PASCAL__": names.appPascal,
     "__DOTNET_PREFIX__": names.dotnetPrefix,
     "__APP_DISPLAY_NAME__": names.displayName,
-    "__AUTH_MODE__": authMode,
     "__BUNDLE_ID_BASE__": names.bundleIdBase
   };
 
