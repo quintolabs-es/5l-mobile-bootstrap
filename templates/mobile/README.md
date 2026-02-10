@@ -2,29 +2,27 @@
 
 React Native app built with Expo. Builds and distribution use EAS (Expo cloud) via the pinned `npx eas-cli@16.32.0` commands.
 
-## Setup (first time)
-### Expo account
+## Setup Expo
+Expo account is used along with `eas` cli to build the apps for both Android and iOS in the cloud, without need to install all the required android/ios specific tooling.
 
-Create an Expo account: `https://expo.dev`
+1. Create an Expo account: `https://expo.dev`
 
-### EAS (first time)
+2. Create Expo project in `https://expo.dev` (or use an existing one).
+Copy the project Id from the presented `eas init --id <project-id> ` command.
+Note: **Don't run `eas init --id <project-id>`** as instructed by Expo docs — it won't update dynamic config (`app.config.ts`) like this template uses. 
 
-```bash
-npx eas-cli@16.32.0 login
-npx eas-cli@16.32.0 build:configure
-```
-
-### Channels
-
-```bash
-npx eas-cli@16.32.0 channel:create staging
-npx eas-cli@16.32.0 channel:create production
-```
+3. Set expo project id manually. Find `PLACEHOLDER_EAS_PROJECT_ID` in `app.config.ts` and replace it with the the project id (take it from `eas init --id <project-id>`, or from the project configuration)
 
 ### iOS devices (internal distribution)
 The ios builds need to be created with the specific list of iphones that will be able to install them. Ade device to the account so they can be targeted by the build.
 ```bash
 npx eas-cli@16.32.0 device:create
+```
+
+### Channels
+```bash
+npx eas-cli@16.32.0 channel:create staging
+npx eas-cli@16.32.0 channel:create production
 ```
 
 ## Project configuration
@@ -56,17 +54,15 @@ cp .env.example .env
 
 - `PLACEHOLDER_SENTRY_DSN` — Sentry DSN (events in staging/production only)
 
-## Build dev client (required)
-
-Expo Go is not supported (native modules). You must build a dev client first.
+## Build development app 
+A development client must be built and installed to run the app.
 
 ```bash
 npm install
-npx eas-cli@16.32.0 build --platform ios --profile development
-npx eas-cli@16.32.0 build --platform android --profile development
+npx eas-cli@16.32.0 build --platform android|ios --profile development
 ```
 
-Install the builds on your device/emulator.
+Install the built app on your device.
 
 ## Run locally
 
@@ -76,7 +72,7 @@ npm run start
 
 Need a deployed WebApi? See `../__SLUG__-webapi/deploy-render.sh` (Render example) after publishing an image with `../__SLUG__-webapi/build-push-img.sh`.
 
-To run as staging/production locally, prefix the command:
+### To run as staging/production locally, prefix the command:
 
 ```bash
 EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npm run start
