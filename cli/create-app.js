@@ -14,7 +14,7 @@ const usage = () => {
   } catch (error) {
     console.log("Help text not found. Expected cli/readme.help.md.");
     console.log("Basic usage:");
-    console.log("  node cli/create-app.js <slug> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]");
+    console.log("  node cli/create-app.js <app-id> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]");
   }
 };
 
@@ -29,18 +29,18 @@ const toPascalSegment = (segment) => {
   return clean[0].toUpperCase() + clean.slice(1);
 };
 
-const parseSlug = (slug) => {
-  if (typeof slug !== "string" || slug.trim() === "") {
-    die("Missing <slug> argument.");
+const parseAppId = (appId) => {
+  if (typeof appId !== "string" || appId.trim() === "") {
+    die("Missing <app-id> argument.");
   }
 
-  const normalized = slug.trim();
+  const normalized = appId.trim();
   if (normalized.includes("/") || normalized.includes("\\")) {
-    die('Invalid slug. Use "--output" to control the destination directory.');
+    die('Invalid app id. Use "--output" to control the destination directory.');
   }
   const parts = normalized.split("-").filter(Boolean);
   if (parts.length === 0) {
-    die(`Invalid slug "${slug}".`);
+    die(`Invalid app id "${appId}".`);
   }
 
   const toBundleSegment = (value) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -49,12 +49,12 @@ const parseSlug = (slug) => {
     const appSlugParts = [parts[0]];
     const appPascal = appSlugParts.map(toPascalSegment).join("");
     if (!appPascal) {
-      die(`Invalid slug "${slug}".`);
+      die(`Invalid app id "${appId}".`);
     }
 
     const bundleApp = toBundleSegment(appSlugParts.join(""));
     return {
-      slug: normalized,
+      appId: normalized,
       orgSlug: "",
       appSlugParts,
       orgPascal: "",
@@ -71,7 +71,7 @@ const parseSlug = (slug) => {
   const orgPascal = toPascalSegment(orgSlug);
   const appPascal = appSlugParts.map(toPascalSegment).join("");
   if (!orgPascal || !appPascal) {
-    die(`Invalid slug "${slug}".`);
+    die(`Invalid app id "${appId}".`);
   }
 
   const dotnetPrefix = `${orgPascal}.${appPascal}`;
@@ -81,7 +81,7 @@ const parseSlug = (slug) => {
   const bundleIdBase = `com.${bundleOrg}.${bundleApp}`;
 
   return {
-    slug: normalized,
+    appId: normalized,
     orgSlug,
     appSlugParts,
     orgPascal,
@@ -99,7 +99,7 @@ const parseArgs = (argv) => {
     process.exit(args.length === 0 ? 1 : 0);
   }
 
-  const slug = args[0];
+  const appId = args[0];
 
   const flags = new Set(args.slice(1));
   const knownOptions = new Set(["--auth", "--output", "--with-mongo-s3-infra"]);
@@ -136,7 +136,7 @@ const parseArgs = (argv) => {
     }
   }
 
-  return { slug, authMode, outputDir, withMongo, withS3 };
+  return { appId, authMode, outputDir, withMongo, withS3 };
 };
 
 const copyDir = (from, to) => {
@@ -354,17 +354,17 @@ const applyWebapiOptionalOverlays = (destWebapiRoot, { withMongo, withS3 }) => {
   }
 };
 
-const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 }) => {
+const writeRootReadme = (appRoot, { appId, dotnetPrefix }, { withMongo, withS3 }) => {
   const lines = [];
 
-  lines.push(`# ${slug}`);
+  lines.push(`# ${appId}`);
   lines.push("");
   lines.push("Bootstrap project generated from `5l-mobile-bootstrap`.");
   lines.push("");
   lines.push("## Docs");
   lines.push("");
-  lines.push(`- Mobile: \`${slug}-mobile/README.md\``);
-  lines.push(`- WebApi: \`${slug}-webapi/README.md\``);
+  lines.push(`- Mobile: \`${appId}-mobile/README.md\``);
+  lines.push(`- WebApi: \`${appId}-webapi/README.md\``);
 
   if (withMongo || withS3) {
     lines.push("");
@@ -383,8 +383,8 @@ const writeRootReadme = (appRoot, { slug, dotnetPrefix }, { withMongo, withS3 })
 };
 
 const main = () => {
-  const { slug, authMode, outputDir, withMongo, withS3 } = parseArgs(process.argv);
-  const names = parseSlug(slug);
+  const { appId, authMode, outputDir, withMongo, withS3 } = parseArgs(process.argv);
+  const names = parseAppId(appId);
 
   const templatesMobile = path.join(repoRoot, "templates", "mobile");
   const templatesWebapi = path.join(repoRoot, "templates", "webapi");
@@ -400,23 +400,25 @@ const main = () => {
         ? outputDir
         : path.resolve(process.cwd(), outputDir);
 
-  const appRoot = path.resolve(outputBaseDir, names.slug);
+  const appRoot = path.resolve(outputBaseDir, names.appId);
   if (fs.existsSync(appRoot)) {
     die(`Destination already exists: ${appRoot}`);
   }
 
   fs.mkdirSync(appRoot, { recursive: true });
 
-  const mobileRoot = path.join(appRoot, `${names.slug}-mobile`);
-  const webapiRoot = path.join(appRoot, `${names.slug}-webapi`);
+  const mobileRoot = path.join(appRoot, `${names.appId}-mobile`);
+  const webapiRoot = path.join(appRoot, `${names.appId}-webapi`);
 
   copyDir(templatesMobile, mobileRoot);
   writeMobileEnvFileIfMissing(mobileRoot);
   copyDir(templatesWebapi, webapiRoot);
   applyWebapiOptionalOverlays(webapiRoot, { withMongo, withS3 });
 
+  const expoSlug = `${names.appId}-mobile`;
   const replacements = {
-    "__SLUG__": names.slug,
+    "__APP_ID__": names.appId,
+    "__SLUG__": expoSlug,
     "__ORG_PASCAL__": names.orgPascal,
     "__APP_PASCAL__": names.appPascal,
     "__DOTNET_PREFIX__": names.dotnetPrefix,
@@ -434,7 +436,7 @@ const main = () => {
 
   writeRootReadme(appRoot, names, { withMongo, withS3 });
 
-  console.log(`Created ${names.slug}/`);
+  console.log(`Created ${names.appId}/`);
 };
 
 main();

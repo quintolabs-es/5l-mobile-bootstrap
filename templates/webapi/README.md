@@ -1,4 +1,4 @@
-# __SLUG__ WebApi
+# __APP_ID__ WebApi
 
 .NET 10 WebApi intended to run in Docker. For deployment examples, see `build-push-img.sh` and `deploy-render.sh`.
 
@@ -7,7 +7,7 @@
 ### `src/appsettings.json`
 
 - `Auth:JwtIssuer` — JWT issuer used by this API when validating tokens (ex: `https://api.example.com`)
-- `Auth:JwtAudience` — JWT audience (ex: `__SLUG__-mobile`)
+- `Auth:JwtAudience` — JWT audience (ex: `__SLUG__`)
 - `Auth:JwtSigningKey` — JWT signing secret (generate a long random string and keep it private)
 
 ### `src/appsettings.[environment].json`
@@ -66,8 +66,8 @@ ASPNETCORE_ENVIRONMENT=production dotnet run --project src
 ## Deploy/build
 
 ```bash
-docker build -t __SLUG__-webapi:dev .
-docker run --rm -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=development __SLUG__-webapi:dev
+docker build -t __APP_ID__-webapi:dev .
+docker run --rm -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=development __APP_ID__-webapi:dev
 ```
 
 ```bash

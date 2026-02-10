@@ -9,7 +9,7 @@ set -e
 #   REGISTRY_PREFIX         Required. Host + namespace, e.g. ghcr.io/quintolabs-es
 #   REGISTRY_USERNAME       Required. Registry username used to login
 #   REGISTRY_TOKEN          Required. Registry token/password used to login
-#   IMAGE_NAME              Optional. Image name/repo (default "__SLUG__-webapi")
+#   IMAGE_NAME              Optional. Image name/repo (default "__APP_ID__-webapi")
 #   IMAGE_TAG               Optional. Tag to publish (default "0.0.1")
 #   DOCKER_DEFAULT_PLATFORM Optional. (default "linux/amd64")
 #
@@ -36,7 +36,7 @@ fi
 REGISTRY_PREFIX="${REGISTRY_PREFIX:-}"
 REGISTRY_USERNAME="${REGISTRY_USERNAME:-}"
 REGISTRY_TOKEN="${REGISTRY_TOKEN:-}"
-IMAGE_NAME="${IMAGE_NAME:-__SLUG__-webapi}"
+IMAGE_NAME="${IMAGE_NAME:-__APP_ID__-webapi}"
 IMAGE_TAG="${IMAGE_TAG:-0.0.1}"
 export DOCKER_DEFAULT_PLATFORM="${DOCKER_DEFAULT_PLATFORM:-linux/amd64}"
 

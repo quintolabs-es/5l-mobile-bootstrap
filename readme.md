@@ -3,7 +3,7 @@
 ## Create a new app
 Clone the repo and cd into the root folder.
 ```bash
-npm run create-app -- <slug> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]
+npm run create-app -- <app-id> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]
 
 # e.g, create app in a folder next to `5l-mobile-bootstrap` folder
 npm run create-app -- org-coolapp --auth required --output .. --with-mongo-s3-infra

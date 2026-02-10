@@ -24,7 +24,7 @@ const isPro = buildEnvironmentName === "production";
 
 const name = isDev ? "__APP_DISPLAY_NAME__ DEV" : isStg ? "__APP_DISPLAY_NAME__ STG" : "__APP_DISPLAY_NAME__";
 
-const appScheme = isDev ? "__SLUG__-dev" : isStg ? "__SLUG__-stg" : "__SLUG__";
+const appScheme = isDev ? "__APP_ID__-dev" : isStg ? "__APP_ID__-stg" : "__APP_ID__";
 
 const packageId = isDev ? "__BUNDLE_ID_BASE__.dev" : isStg ? "__BUNDLE_ID_BASE__.stg" : "__BUNDLE_ID_BASE__";
 
@@ -78,4 +78,3 @@ export default withSentry(config, {
   project: "PLACEHOLDER_SENTRY_PROJECT",
   organization: "PLACEHOLDER_SENTRY_ORG"
 });
-

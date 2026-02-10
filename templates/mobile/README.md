@@ -1,20 +1,17 @@
-# __SLUG__ mobile
+# __APP_ID__ mobile
 
 React Native app built with Expo. Builds and distribution use EAS (Expo cloud) via the pinned `npx eas-cli@16.32.0` commands.
 
-## Setup Expo
-Expo account is used along with `eas` cli to build the apps for both Android and iOS in the cloud, without need to install all the required android/ios specific tooling.
+## Setup (Expo/EAS)
 
 1. Create an Expo account: `https://expo.dev`
-
-2. Create Expo project in `https://expo.dev` (or use an existing one).
-Copy the project Id from the presented `eas init --id <project-id> ` command.
-Note: **Don't run `eas init --id <project-id>`** as instructed by Expo docs — it won't update dynamic config (`app.config.ts`) like this template uses. 
-
-3. Set expo project id manually. Find `PLACEHOLDER_EAS_PROJECT_ID` in `app.config.ts` and replace it with the the project id (take it from `eas init --id <project-id>`, or from the project configuration)
+2. Create (or pick) an Expo project in `https://expo.dev`.
+   - Set the project `slug` to `__SLUG__` (must end with `-mobile`).
+   - Don't run `eas init --id <project-id>` — it won't update this template's dynamic config (`app.config.ts`).
+3. Set the EAS project id in `app.config.ts` by replacing `PLACEHOLDER_EAS_PROJECT_ID`.
 
 ### iOS devices (internal distribution)
-The ios builds need to be created with the specific list of iphones that will be able to install them. Ade device to the account so they can be targeted by the build.
+Internal iOS builds need devices registered in your Expo account.
 ```bash
 npx eas-cli@16.32.0 device:create
 ```
@@ -70,7 +67,7 @@ Install the built app on your device.
 npm run start
 ```
 
-Need a deployed WebApi? See `../__SLUG__-webapi/deploy-render.sh` (Render example) after publishing an image with `../__SLUG__-webapi/build-push-img.sh`.
+Need a deployed WebApi? See `../__APP_ID__-webapi/deploy-render.sh` (Render example) after publishing an image with `../__APP_ID__-webapi/build-push-img.sh`.
 
 ### To run as staging/production locally, prefix the command:
 

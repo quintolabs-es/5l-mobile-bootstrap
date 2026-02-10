@@ -1,10 +1,11 @@
 Usage:
-  npm run create-app -- <slug> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]
+  npm run create-app -- <app-id> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]
 
 Arguments:
-  <slug>                       Project id used for folder names + bundle id + .NET prefix
+  <app-id>                     Project id used for folder names + bundle id + .NET prefix
                                Recommended: org-appname (e.g. acme-demoapp)
                                Allowed: appname (no dash)
+                               Mobile Expo slug: <app-id>-mobile
 
 Options:
   --auth <required|optional>    Required. Whether the app must require authentication or not:
