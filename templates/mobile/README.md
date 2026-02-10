@@ -29,7 +29,13 @@ npx eas-cli@16.32.0 device:create
 
 ## Project configuration
 
-### `.env` file (use .env.example)
+### `.env` file
+
+Created automatically for development. To reset:
+
+```bash
+cp .env.example .env
+```
 
 - `EXPO_PUBLIC_BUILD_ENVIRONMENT` — set to `development`; can also prefix commands with `EXPO_PUBLIC_BUILD_ENVIRONMENT=staging|production`
 
@@ -56,7 +62,6 @@ Expo Go is not supported (native modules). You must build a dev client first.
 
 ```bash
 npm install
-cp .env.example .env
 npx eas-cli@16.32.0 build --platform ios --profile development
 npx eas-cli@16.32.0 build --platform android --profile development
 ```

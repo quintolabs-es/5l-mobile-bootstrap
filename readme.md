@@ -3,10 +3,10 @@
 ## Create a new app
 Clone the repo and cd into the root folder.
 ```bash
-npm run create-app -- <slug> --auth <required|optional> [--output <path>] [--with-mongo] [--with-s3]
+npm run create-app -- <slug> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]
 
 # e.g, create app in a folder next to `5l-mobile-bootstrap` folder
-npm run create-app -- org-coolapp --auth required --output .. --with-mongo --with-s3
+npm run create-app -- org-coolapp --auth required --output .. --with-mongo-s3-infra
 ```
 
 Usage help:
@@ -26,9 +26,4 @@ org-appname/
       Org.Appname.WebApi.csproj
     tests/
       Org.Appname.WebApi.Tests.csproj
-```
-
-## Generated app
-```bash
-cat org-appname/README.md
 ```

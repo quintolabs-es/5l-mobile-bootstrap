@@ -15,10 +15,28 @@
 - `Auth:GoogleClientId` — Google OAuth client id used to validate Google `idToken` 
 - `Sentry:Dsn` — Sentry DSN. Keep empty in development to disable Sentry.
 
+### Environment variables (recommended for secrets)
+
+ASP.NET Core reads environment variables by default. Use `__` for nesting (example: `Auth__JwtSigningKey` maps to `Auth:JwtSigningKey`).
+
+- `Auth__JwtIssuer`
+- `Auth__JwtAudience`
+- `Auth__JwtSigningKey` (secret)
+- `Auth__GoogleClientId`
+- `Sentry__Dsn`
+- Optional Mongo (only if generated): `Mongo__ConnectionString` (secret), `Mongo__DatabaseName`
+- Optional S3 (only if generated): `S3__ServiceUrl`, `S3__AccessKeyId`, `S3__SecretAccessKey` (secret), `S3__BucketName`, `S3__PublicUrl`
+
 ### Optional infra (only if generated)
 
-- If you generated with `--with-mongo` and/or `--with-s3`, the corresponding config sections are added to `src/appsettings.[environment].json`.
+- If you generated with `--with-mongo-s3-infra`, the corresponding config sections are added to `src/appsettings.[environment].json`.
 - These features use mocks by default so the API runs without external services. To use the real implementations, fill the config and uncomment the registrations in `src/WebApplicationBuilderExtensions.cs`.
+
+## Example endpoints
+
+- `GET /public/posts` — public feed (anonymous; token is optional)
+- `GET /posts` — posts example (only if generated with `--with-mongo-s3-infra`)
+- `POST /posts` — saves the post in Mongo and the image in S3 (only if generated with `--with-mongo-s3-infra`)
 
 ## Run locally
 
@@ -28,6 +46,15 @@ dotnet run --project src
 ```
 
 `dotnet run` defaults to `ASPNETCORE_ENVIRONMENT=development` via `src/Properties/launchSettings.json`.
+
+Note: `.NET` does not read a `.env` file automatically. If you want to keep local secrets in `.env`, load it in your shell before `dotnet run`:
+
+```bash
+set -a
+source .env
+set +a
+dotnet run --project src
+```
 
 To run as staging/production locally:
 
@@ -48,6 +75,11 @@ cp .env.example .env
 # edit .env
 bash build-push-img.sh
 ```
+
+`.env` keys used by scripts:
+
+- `build-push-img.sh` — Required: `REGISTRY_PREFIX`, `REGISTRY_USERNAME`, `REGISTRY_TOKEN`. Optional: `IMAGE_NAME`, `IMAGE_TAG`, `DOCKER_DEFAULT_PLATFORM`.
+- `deploy-render.sh` (optional) — `RENDER_SERVICE_ID_DEV/STG/PROD`, `RENDER_DEPLOY_KEY_DEV/STG/PROD`.
 
 Optional (Render example):
 

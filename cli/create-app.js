@@ -14,7 +14,7 @@ const usage = () => {
   } catch (error) {
     console.log("Help text not found. Expected cli/readme.help.md.");
     console.log("Basic usage:");
-    console.log("  node cli/create-app.js <slug> --auth <required|optional> [--output <path>] [--with-mongo] [--with-s3]");
+    console.log("  node cli/create-app.js <slug> --auth <required|optional> [--output <path>] [--with-mongo-s3-infra]");
   }
 };
 
@@ -102,8 +102,17 @@ const parseArgs = (argv) => {
   const slug = args[0];
 
   const flags = new Set(args.slice(1));
-  const withMongo = flags.has("--with-mongo");
-  const withS3 = flags.has("--with-s3");
+  const knownOptions = new Set(["--auth", "--output", "--with-mongo-s3-infra"]);
+  for (const token of args.slice(1)) {
+    if (token.startsWith("--") && !knownOptions.has(token)) {
+      die(`Unknown option "${token}".`);
+    }
+  }
+
+  const withMongoS3Infra = flags.has("--with-mongo-s3-infra");
+
+  const withMongo = withMongoS3Infra;
+  const withS3 = withMongoS3Infra;
 
   const authIdx = args.indexOf("--auth");
   if (authIdx === -1 || authIdx === args.length - 1) {
@@ -132,6 +141,16 @@ const parseArgs = (argv) => {
 
 const copyDir = (from, to) => {
   fs.cpSync(from, to, { recursive: true, errorOnExist: false });
+};
+
+const writeMobileEnvFileIfMissing = (mobileRoot) => {
+  const examplePath = path.join(mobileRoot, ".env.example");
+  const envPath = path.join(mobileRoot, ".env");
+
+  if (!fs.existsSync(examplePath)) return;
+  if (fs.existsSync(envPath)) return;
+
+  fs.copyFileSync(examplePath, envPath);
 };
 
 const isTextFile = (filePath) => {
@@ -298,16 +317,16 @@ const updateWebApiOptionalRegistrations = (webapiSrcDir, { withMongo, withS3 }) 
   const mongoBlock = withMongo
     ? [
         "        // MongoDB (mock by default; uncomment real implementation when configured)",
-        "        services.AddSingleton<IMongoExampleService, MockMongoExampleService>();",
-        "        // services.AddSingleton<IMongoExampleService, MongoExampleService>();"
+        "        services.AddSingleton<IPostsRepository, MockPostsRepository>();",
+        "        // services.AddSingleton<IPostsRepository, MongoPostsRepository>();"
       ].join("\n")
     : "";
 
   const s3Block = withS3
     ? [
         "        // S3 (mock by default; uncomment real implementation when configured)",
-        "        services.AddSingleton<IS3ExampleService, MockS3ExampleService>();",
-        "        // services.AddSingleton<IS3ExampleService, S3ExampleService>();"
+        "        services.AddSingleton<IPostImagesStorageService, MockPostImagesStorageService>();",
+        "        // services.AddSingleton<IPostImagesStorageService, S3PostImagesStorageService>();"
       ].join("\n")
     : "";
 
@@ -327,6 +346,10 @@ const applyWebapiOptionalOverlays = (destWebapiRoot, { withMongo, withS3 }) => {
   }
   if (withS3) {
     const src = path.join(repoRoot, "templates", "webapi-optional", "s3");
+    copyDir(src, destWebapiRoot);
+  }
+  if (withMongo && withS3) {
+    const src = path.join(repoRoot, "templates", "webapi-optional", "mongo-s3");
     copyDir(src, destWebapiRoot);
   }
 };
@@ -388,6 +411,7 @@ const main = () => {
   const webapiRoot = path.join(appRoot, `${names.slug}-webapi`);
 
   copyDir(templatesMobile, mobileRoot);
+  writeMobileEnvFileIfMissing(mobileRoot);
   copyDir(templatesWebapi, webapiRoot);
   applyWebapiOptionalOverlays(webapiRoot, { withMongo, withS3 });
 
