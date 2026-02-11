@@ -1,4 +1,6 @@
 using System.Text;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -34,9 +36,8 @@ public static class WebApplicationBuilderExtensions
     public static void RegisterServices(this WebApplicationBuilder builder, AppSettings settings)
     {
         builder.Services.AddCors();
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddFastEndpoints();
+        builder.Services.SwaggerDocument();
         builder.Services.AddAuthorization();
 
         builder.Services.AddAuthentication(options =>
@@ -75,6 +76,7 @@ public static class WebApplicationBuilderExtensions
         services.AddSingleton<JwtTokenGenerator>();
         services.AddSingleton<GoogleTokenValidator>();
         services.AddSingleton<AppleTokenValidator>();
+        services.AddSingleton<SignInService>();
 
         services.AddSingleton<IUsersStorageService, InMemoryUsersStorageService>();
 

@@ -47,6 +47,11 @@ dotnet run --project src
 
 `dotnet run` defaults to `ASPNETCORE_ENVIRONMENT=development` via `src/Properties/launchSettings.json`.
 
+### Swagger (development only)
+
+- Swagger UI: `/swagger` (example: `http://localhost:5000/swagger`)
+- OpenAPI JSON: `/swagger/v1/swagger.json`
+
 Note: `.NET` does not read a `.env` file automatically. If you want to keep local secrets in `.env`, load it in your shell before `dotnet run`:
 
 ```bash

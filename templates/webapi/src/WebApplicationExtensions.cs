@@ -6,12 +6,6 @@ public static class WebApplicationExtensions
     {
         app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
         app.UseCors(builder => builder
             .AllowAnyOrigin()
             .AllowAnyMethod()
@@ -26,4 +20,3 @@ public static class WebApplicationExtensions
         app.UseAuthorization();
     }
 }
-
