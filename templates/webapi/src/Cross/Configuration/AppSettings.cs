@@ -39,4 +39,3 @@ public class SentrySettings
 {
     public string Dsn { get; set; } = string.Empty;
 }
-

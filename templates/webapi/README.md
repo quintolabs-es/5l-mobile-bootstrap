@@ -3,6 +3,11 @@
 .NET 10 WebApi intended to run in Docker. For deployment examples, see `build-push-img.sh` and `deploy-render.sh`.
 
 ## Configuration
+### Environment
+
+The environment is set via `ASPNETCORE_ENVIRONMENT` (values: `development`, `staging`, `production`).
+This template requires it to be set; if missing, the app throws on startup. `dotnet run` uses `development` via `src/Properties/launchSettings.json`.
+The app loads `appsettings.json` plus `appsettings.{environment}.json`.
 
 ### `src/appsettings.json`
 

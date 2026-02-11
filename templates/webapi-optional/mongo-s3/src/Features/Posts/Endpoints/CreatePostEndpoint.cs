@@ -42,7 +42,6 @@ public class CreatePostEndpoint : Endpoint<CreatePostRequest, Post>
 
         await _postsRepository.CreateAsync(post, ct);
 
-        HttpContext.Response.Headers.Location = $"/posts/{post.Id}";
-        await SendAsync(post, StatusCodes.Status201Created, cancellation: ct);
+        await Send.ResultAsync(Results.Created($"/posts/{post.Id}", post));
     }
 }

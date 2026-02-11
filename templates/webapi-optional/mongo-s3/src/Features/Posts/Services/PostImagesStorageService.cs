@@ -11,6 +11,8 @@ public interface IPostImagesStorageService
         byte[] bytes,
         string? contentType = null,
         CancellationToken cancellationToken = default);
+
+    Task CheckConnectionAsync(CancellationToken cancellationToken = default);
 }
 
 public class MockPostImagesStorageService : IPostImagesStorageService
@@ -26,6 +28,12 @@ public class MockPostImagesStorageService : IPostImagesStorageService
         _ = cancellationToken;
 
         return Task.FromResult($"https://example.invalid/mock-s3/posts/{postId}.jpg");
+    }
+
+    public Task CheckConnectionAsync(CancellationToken cancellationToken = default)
+    {
+        _ = cancellationToken;
+        return Task.CompletedTask;
     }
 }
 
@@ -70,5 +78,15 @@ public class S3PostImagesStorageService : IPostImagesStorageService
         return string.IsNullOrWhiteSpace(publicUrlBase)
             ? key
             : $"{publicUrlBase}/{key}";
+    }
+
+    public async Task CheckConnectionAsync(CancellationToken cancellationToken = default)
+    {
+        var request = new GetBucketLocationRequest
+        {
+            BucketName = _settings.BucketName
+        };
+
+        await _client.GetBucketLocationAsync(request, cancellationToken);
     }
 }

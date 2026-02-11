@@ -12,6 +12,13 @@ public static class WebApplicationBuilderExtensions
 {
     public static AppSettings InitializeAppSettings(this WebApplicationBuilder builder)
     {
+        var aspnetEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (string.IsNullOrWhiteSpace(aspnetEnvironment))
+        {
+            throw new InvalidOperationException(
+                "ASPNETCORE_ENVIRONMENT is required. Set it to \"development\", \"staging\", or \"production\".");
+        }
+
         builder.Services.Configure<AppSettings>(builder.Configuration);
 
         return builder.Configuration.Get<AppSettings>()

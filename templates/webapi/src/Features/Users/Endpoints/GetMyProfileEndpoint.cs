@@ -14,7 +14,6 @@ public class GetMyProfileEndpoint : EndpointWithoutRequest<UserModel>
     public override void Configure()
     {
         Get("/users/me");
-        RequireAuthorization();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
