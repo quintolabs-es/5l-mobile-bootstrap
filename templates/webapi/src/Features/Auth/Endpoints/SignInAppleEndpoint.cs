@@ -28,7 +28,7 @@ public class SignInAppleEndpoint : Endpoint<AppleAuthUser, LoginModel>
             var user = AppUser.CreateUserFromAppleIdTokenClaims(claims, req.User);
             var loginModel = await _signInService.RegisterUserIfNotExistAndLoginAsync(user);
 
-            await SendOkAsync(loginModel, ct);
+            await Send.OkAsync(loginModel, ct);
         }
         catch (InvalidAppleJwtException ex)
         {

@@ -29,7 +29,7 @@ public class SignInGoogleEndpoint : Endpoint<GoogleAuthUser, LoginModel>
             var user = AppUser.CreateUserFromGooglePayload(payload, req.User);
             var loginModel = await _signInService.RegisterUserIfNotExistAndLoginAsync(user);
 
-            await SendOkAsync(loginModel, ct);
+            await Send.OkAsync(loginModel, ct);
         }
         catch (InvalidJwtException ex)
         {

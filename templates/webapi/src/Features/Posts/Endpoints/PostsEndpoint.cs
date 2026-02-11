@@ -4,11 +4,11 @@ using FastEndpoints;
 
 namespace __DOTNET_PREFIX__.WebApi;
 
-public class PublicPostsEndpoint : EndpointWithoutRequest<PublicPostsResponse>
+public class PostsEndpoint : EndpointWithoutRequest<PublicPostsResponse>
 {
     public override void Configure()
     {
-        Get("/public/posts");
+        Get("/posts");
         AllowAnonymous();
     }
 
@@ -27,6 +27,6 @@ public class PublicPostsEndpoint : EndpointWithoutRequest<PublicPostsResponse>
             }
         );
 
-        await SendOkAsync(response, ct);
+        await Send.OkAsync(response, ct);
     }
 }

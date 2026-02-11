@@ -1,12 +1,12 @@
 namespace __DOTNET_PREFIX__.WebApi;
 
-public interface IUsersStorageService
+public interface IUsersRepository
 {
     Task<User?> GetByIdAsync(string userId);
     Task<User> AddIfNotExistsByIdInProviderAsync(User user);
 }
 
-public class InMemoryUsersStorageService : IUsersStorageService
+public class InMemoryUsersRepository : IUsersRepository
 {
     private readonly object _lock = new();
     private readonly Dictionary<string, User> _byId = new();
@@ -38,4 +38,3 @@ public class InMemoryUsersStorageService : IUsersStorageService
         }
     }
 }
-

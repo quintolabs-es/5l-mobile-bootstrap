@@ -392,14 +392,6 @@ const updateWebApiOptionalRegistrations = (webapiSrcDir, { withMongo, withS3 }) 
 };
 
 const applyWebapiOptionalOverlays = (destWebapiRoot, { withMongo, withS3 }) => {
-  if (withMongo) {
-    const src = path.join(repoRoot, "templates", "webapi-optional", "mongo");
-    copyDir(src, destWebapiRoot);
-  }
-  if (withS3) {
-    const src = path.join(repoRoot, "templates", "webapi-optional", "s3");
-    copyDir(src, destWebapiRoot);
-  }
   if (withMongo && withS3) {
     const src = path.join(repoRoot, "templates", "webapi-optional", "mongo-s3");
     copyDir(src, destWebapiRoot);
@@ -415,8 +407,8 @@ const writeRootReadme = (appRoot, { appId, dotnetPrefix }, { withMongo, withS3 }
   lines.push("");
   lines.push("## Docs");
   lines.push("");
-  lines.push(`- Mobile: \`${appId}-mobile/README.md\``);
-  lines.push(`- WebApi: \`${appId}-webapi/README.md\``);
+  lines.push(`- Mobile: \`${appId}-mobile/readme.md\``);
+  lines.push(`- WebApi: \`${appId}-webapi/readme.md\``);
 
   if (withMongo || withS3) {
     lines.push("");
@@ -431,7 +423,7 @@ const writeRootReadme = (appRoot, { appId, dotnetPrefix }, { withMongo, withS3 }
   lines.push(`- WebApi tests: ${dotnetPrefix}.WebApi.Tests`);
   lines.push("");
 
-  fs.writeFileSync(path.join(appRoot, "README.md"), lines.join("\n"), "utf8");
+  fs.writeFileSync(path.join(appRoot, "readme.md"), lines.join("\n"), "utf8");
 };
 
 const main = () => {

@@ -4,12 +4,12 @@ namespace __DOTNET_PREFIX__.WebApi;
 
 public class RefreshTokenEndpoint : EndpointWithoutRequest<TokensModel>
 {
-    private readonly IUsersStorageService _usersStorageService;
+    private readonly IUsersRepository _usersRepository;
     private readonly JwtTokenGenerator _jwtTokenGenerator;
 
-    public RefreshTokenEndpoint(IUsersStorageService usersStorageService, JwtTokenGenerator jwtTokenGenerator)
+    public RefreshTokenEndpoint(IUsersRepository usersRepository, JwtTokenGenerator jwtTokenGenerator)
     {
-        _usersStorageService = usersStorageService;
+        _usersRepository = usersRepository;
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
@@ -21,7 +21,7 @@ public class RefreshTokenEndpoint : EndpointWithoutRequest<TokensModel>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var currentUser = await _usersStorageService.GetByIdAsync(HttpContext.CurrentUserId());
+        var currentUser = await _usersRepository.GetByIdAsync(HttpContext.CurrentUserId());
         if (currentUser == null)
         {
             await HttpContext.Response.SendAsync("Current user not found.", StatusCodes.Status401Unauthorized, cancellation: ct);
@@ -29,6 +29,6 @@ public class RefreshTokenEndpoint : EndpointWithoutRequest<TokensModel>
         }
 
         (var accessToken, var refreshToken) = _jwtTokenGenerator.GenerateTokens(currentUser);
-        await SendOkAsync(new TokensModel(accessToken, refreshToken), ct);
+        await Send.OkAsync(new TokensModel(accessToken, refreshToken), ct);
     }
 }

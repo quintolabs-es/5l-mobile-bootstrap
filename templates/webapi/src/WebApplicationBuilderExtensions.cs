@@ -78,7 +78,7 @@ public static class WebApplicationBuilderExtensions
         services.AddSingleton<AppleTokenValidator>();
         services.AddSingleton<SignInService>();
 
-        services.AddSingleton<IUsersStorageService, InMemoryUsersStorageService>();
+        services.AddSingleton<IUsersRepository, InMemoryUsersRepository>();
 
         // __WITH_MONGO_SERVICES__
         // __WITH_S3_SERVICES__
