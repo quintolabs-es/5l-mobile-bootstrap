@@ -40,7 +40,6 @@ ASP.NET Core reads environment variables by default. Use `__` for nesting (examp
 ## Example endpoints
 
 - `GET /posts` — public feed (anonymous; token is optional)
-- `GET /posts` — posts example (only if generated with `--with-mongo-s3-infra`)
 - `POST /posts` — saves the post in Mongo and the image in S3 (only if generated with `--with-mongo-s3-infra`)
 
 ## Run locally

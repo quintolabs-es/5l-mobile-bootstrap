@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace __DOTNET_PREFIX__.WebApi;
 
-public class PostsEndpoint : EndpointWithoutRequest<PublicPostsResponse>
+public class PostsEndpoint : EndpointWithoutRequest<PostsResponse>
 {
     public override void Configure()
     {
@@ -18,12 +18,12 @@ public class PostsEndpoint : EndpointWithoutRequest<PublicPostsResponse>
             ? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             : null;
 
-        var response = new PublicPostsResponse(
+        var response = new PostsResponse(
             viewerUserId,
-            new[]
+            new List<Post>
             {
-                new PublicPost("post-1", "Hello world"),
-                new PublicPost("post-2", "This is public content")
+                new() { Id = "post-1", Title = "Hello world", CreatedAtUtc = DateTime.UtcNow.AddMinutes(-10) },
+                new() { Id = "post-2", Title = "This is public content", CreatedAtUtc = DateTime.UtcNow.AddMinutes(-5) }
             }
         );
 

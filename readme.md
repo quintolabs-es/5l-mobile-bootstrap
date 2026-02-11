@@ -21,7 +21,7 @@ org-coolapp/
     tests/
   org-coolapp-webapi/
     src/
-      Org.coolapp.WebApi.csproj
+      Org.Coolapp.WebApi.csproj
     tests/
-      Org.coolapp.WebApi.Tests.csproj
+      Org.Coolapp.WebApi.Tests.csproj
 ```

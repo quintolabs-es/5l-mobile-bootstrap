@@ -8,6 +8,7 @@ import initializeSentryIfIsNotDev from "./src/SentryLoggerInitializer";
 import { ConfigurationProvider } from "./src/providers/ConfigurationProvider";
 import { LoggerProvider } from "./src/providers/LoggerProvider";
 import { AuthProvider, useAuth } from "./src/providers/AuthProvider";
+import { ApiClientProvider } from "./src/providers/ApiClientProvider";
 
 import HomeScreen from "./src/screens/home/HomeScreen";
 import LoginScreen from "./src/screens/login/LoginScreen";
@@ -44,7 +45,9 @@ const App: React.FC = () => {
       <LoggerProvider>
         <ConfigurationProvider>
           <AuthProvider>
-            <RootNavigator />
+            <ApiClientProvider>
+              <RootNavigator />
+            </ApiClientProvider>
           </AuthProvider>
         </ConfigurationProvider>
       </LoggerProvider>

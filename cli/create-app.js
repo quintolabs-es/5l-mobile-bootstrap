@@ -395,6 +395,11 @@ const applyWebapiOptionalOverlays = (destWebapiRoot, { withMongo, withS3 }) => {
   if (withMongo && withS3) {
     const src = path.join(repoRoot, "templates", "webapi-optional", "mongo-s3");
     copyDir(src, destWebapiRoot);
+
+    const basePostsEndpoint = path.join(destWebapiRoot, "src", "Features", "Posts", "Endpoints", "PostsEndpoint.cs");
+    if (fs.existsSync(basePostsEndpoint)) {
+      fs.unlinkSync(basePostsEndpoint);
+    }
   }
 };
 

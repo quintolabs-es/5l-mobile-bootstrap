@@ -1,10 +1,7 @@
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace __DOTNET_PREFIX__.WebApi;
 
-public class Post
+public record Post
 {
-    [BsonId]
     public string Id { get; set; } = string.Empty;
 
     public string Title { get; set; } = string.Empty;
@@ -13,4 +10,3 @@ public class Post
 
     public DateTime CreatedAtUtc { get; set; }
 }
-

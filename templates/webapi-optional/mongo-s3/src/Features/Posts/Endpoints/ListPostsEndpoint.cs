@@ -1,8 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using FastEndpoints;
 
 namespace __DOTNET_PREFIX__.WebApi;
 
-public class ListPostsEndpoint : EndpointWithoutRequest<IReadOnlyList<Post>>
+public class ListPostsEndpoint : EndpointWithoutRequest<PostsResponse>
 {
     private readonly IPostsRepository _postsRepository;
 
@@ -19,7 +21,14 @@ public class ListPostsEndpoint : EndpointWithoutRequest<IReadOnlyList<Post>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
+        var viewerUserId = User.Identity?.IsAuthenticated == true
+            ? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+            : null;
+
         var posts = await _postsRepository.ListAsync(ct);
-        await Send.OkAsync(posts, ct);
+
+        var response = new PostsResponse(viewerUserId, posts);
+
+        await Send.OkAsync(response, ct);
     }
 }
