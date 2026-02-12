@@ -24,17 +24,17 @@ trap on_error ERR
 
 rm -rf "$APP_ROOT"
 
-echo "Creating test app ..."
-echo "....................."
+echo "Creating test app ......................"
+echo ""
 npm run create-app -- "$APP_ID" --auth required --output "$OUTPUT_DIR_REL" --with-mongo-s3-infra
 
-echo "Building webapi ..."
-echo "..................."
+echo "Building webapi ......................"
+echo ""
 cd "$APP_ROOT/${APP_ID}-webapi"
 dotnet build
 
-echo "Building mobile ..."
-echo "..................."
+echo "Building mobile ......................"
+echo ""
 cd "$APP_ROOT/${APP_ID}-mobile"
 npm install
 npm run build
