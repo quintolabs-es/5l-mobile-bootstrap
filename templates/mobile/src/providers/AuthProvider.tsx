@@ -14,6 +14,7 @@ type AuthContextType = Readonly<{
   currentUser: UserModel | null;
   signInGoogleAsync: () => Promise<void>;
   signInAppleAsync: () => Promise<void>;
+  mockSignInAsync: () => Promise<void>;
   signOutAsync: () => Promise<void>;
 }>;
 
@@ -111,6 +112,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     await loginStorage.saveAsync(signInModel);
   };
 
+  const mockSignInAsync = async (): Promise<void> => {
+    const signInModel: SignInModel = {
+      tokens: {
+        accessToken: "mock-access-token",
+        refreshToken: "mock-refresh-token"
+      },
+      user: {
+        id: "mock-user-1",
+        email: "mock.user@example.com",
+        nickName: "Mock User",
+        givenName: "Mock",
+        familyName: "User",
+        authProvider: "google",
+        idInProvider: "ggl-mock-user-1"
+      }
+    };
+
+    await signInLocalClientAsync(signInModel);
+  };
+
   const signOutAsync = async (): Promise<void> => {
     setCurrentUser(null);
     setAccessToken(null);
@@ -118,9 +139,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const value = useMemo<AuthContextType>(() => {
-    return { accessToken, currentUser, signInGoogleAsync, signInAppleAsync, signOutAsync };
+    return { accessToken, currentUser, signInGoogleAsync, signInAppleAsync, mockSignInAsync, signOutAsync };
   }, [accessToken, currentUser]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-

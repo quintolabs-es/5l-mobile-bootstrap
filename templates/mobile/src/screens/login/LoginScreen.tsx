@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { useAuth } from "../../providers/AuthProvider";
+import { useConfiguration } from "../../providers/ConfigurationProvider";
 import { useLogger } from "../../providers/LoggerProvider";
 import { AppError } from "../../AppError";
 import { appStylesConstants } from "../../styles/appStylesConstants";
+import { appGlobalStyles } from "../../styles/appGlobalStyles";
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +36,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: appStylesConstants.sizes.primaryButtonHeight
   },
+  mockSignInContainer: {
+    marginTop: appStylesConstants.spacing.md
+  },
   activityIndicator: {
     marginTop: appStylesConstants.spacing.lg
   }
@@ -41,7 +46,10 @@ const styles = StyleSheet.create({
 
 const LoginScreen: React.FC = () => {
   const logger = useLogger();
-  const { signInGoogleAsync, signInAppleAsync } = useAuth();
+  const { getAppConfig } = useConfiguration();
+  const { mockSignInEnabled } = getAppConfig();
+
+  const { signInGoogleAsync, signInAppleAsync, mockSignInAsync } = useAuth();
 
   const [isSigninInProgress, setIsSignInInProgress] = useState(false);
   const [isAppleAuthAvailable, setIsAppleAuthAvailable] = useState(false);
@@ -79,6 +87,17 @@ const LoginScreen: React.FC = () => {
     }
   };
 
+  const mockSignInAsyncAndContinue = async () => {
+    try {
+      setIsSignInInProgress(true);
+      await mockSignInAsync();
+    } catch (error) {
+      logger.logException(new AppError("Failed mock sign-in", error));
+    } finally {
+      setIsSignInInProgress(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>__APP_DISPLAY_NAME__</Text>
@@ -102,6 +121,18 @@ const LoginScreen: React.FC = () => {
             style={styles.appleButton}
             onPress={signInWithAppleAsync}
           />
+        </View>
+      )}
+
+      {mockSignInEnabled && (
+        <View style={styles.mockSignInContainer}>
+          <Pressable
+            onPress={mockSignInAsyncAndContinue}
+            disabled={isSigninInProgress}
+            style={[appGlobalStyles.primaryButton, isSigninInProgress ? { opacity: 0.6 } : null]}
+          >
+            <Text style={appGlobalStyles.primaryButtonText}>Mock Sign In</Text>
+          </Pressable>
         </View>
       )}
 

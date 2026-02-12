@@ -77,6 +77,7 @@ Created automatically for development.
 - `PLACEHOLDER_WEBAPI_DEV_URL/STG/PROD` — WebApi base URL (use a deployed URL; `localhost` won't work on a real device)
 - `PLACEHOLDER_GOOGLE_WEB_CLIENT_ID_DEV/STG/PROD` — Google OAuth web client id 
 - `PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_DEV/STG/PROD` — Google OAuth iOS client id 
+- `mockSignInEnabled` — optional dev helper; when true, shows a "Mock Sign In" button to bypass native login
 
 #### `app.config.ts`
 

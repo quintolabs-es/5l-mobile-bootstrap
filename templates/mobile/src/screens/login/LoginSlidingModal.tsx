@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { useAuth } from "../../providers/AuthProvider";
+import { useConfiguration } from "../../providers/ConfigurationProvider";
 import { useLogger } from "../../providers/LoggerProvider";
 import { AppError } from "../../AppError";
 import { appStylesConstants } from "../../styles/appStylesConstants";
+import { appGlobalStyles } from "../../styles/appGlobalStyles";
 import SlidingModal from "../modal/SlidingModal";
 import loginModalStyles from "./loginModalStyles";
 
@@ -24,7 +26,10 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
   const [isSigninInProgress, setIsSignInInProgress] = useState(false);
   const [isAppleAuthAvailable, setIsAppleAuthAvailable] = useState<boolean>();
 
-  const { signInGoogleAsync, signInAppleAsync } = useAuth();
+  const { getAppConfig } = useConfiguration();
+  const { mockSignInEnabled } = getAppConfig();
+
+  const { signInGoogleAsync, signInAppleAsync, mockSignInAsync } = useAuth();
   const logger = useLogger();
 
   useEffect(() => {
@@ -59,6 +64,18 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
     }
   };
 
+  const mockSignInAndCloseAsync = async () => {
+    try {
+      setIsSignInInProgress(true);
+      await mockSignInAsync();
+    } catch (error) {
+      logger.logException(new AppError("Failed mock sign-in", error));
+    } finally {
+      setIsSignInInProgress(false);
+      closeLoginModal();
+    }
+  };
+
   return (
     <SlidingModal visible={loginModalVisible} close={closeLoginModal}>
       <View style={loginModalStyles.container}>
@@ -79,6 +96,16 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
             style={loginModalStyles.appleLoginButton}
             onPress={signInWithAppleAndCloseAsync}
           />
+        )}
+
+        {mockSignInEnabled && (
+          <Pressable
+            onPress={mockSignInAndCloseAsync}
+            disabled={isSigninInProgress}
+            style={[appGlobalStyles.primaryButton, isSigninInProgress ? { opacity: 0.6 } : null]}
+          >
+            <Text style={appGlobalStyles.primaryButtonText}>Mock Sign In</Text>
+          </Pressable>
         )}
       </View>
     </SlidingModal>
