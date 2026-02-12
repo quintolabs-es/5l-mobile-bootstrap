@@ -14,6 +14,7 @@ export type GoogleSignInConfig = Readonly<{
   webClientId: string;
   iosClientId: string;
   scopes: string[];
+  mockEnabled?: boolean;
 }>;
 
 export type ExpoPlatformConfig = Readonly<{
@@ -69,7 +70,8 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
         : isStaging
           ? "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_STG"
           : "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_PROD",
-      scopes: ["email"]
+      scopes: ["email"],
+      mockEnabled: false
     };
   }, [isDevelopment, isStaging]);
 
@@ -93,4 +95,3 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
 
   return <ConfigurationContext.Provider value={value}>{children}</ConfigurationContext.Provider>;
 };
-

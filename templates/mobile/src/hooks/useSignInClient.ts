@@ -14,8 +14,9 @@ interface SignInClient {
 }
 
 export default function useSignInClient(): SignInClient {
-  const { getAppConfig } = useConfiguration();
+  const { getAppConfig, getGoogleSignInConfig } = useConfiguration();
   const { apiBaseUrl } = getAppConfig();
+  const { mockEnabled: googleSignInMock } = getGoogleSignInConfig();
   const logger = useLogger();
 
   const apiClient: AxiosInstance = axios.create({ baseURL: apiBaseUrl });
@@ -45,6 +46,24 @@ export default function useSignInClient(): SignInClient {
       captureHttpError(error);
       throw error;
     }
+  };
+
+  const mockSignInWithGoogleAsync = async (): Promise<SignInModel> => {
+    return {
+      tokens: {
+        accessToken: "mock-access-token",
+        refreshToken: "mock-refresh-token"
+      },
+      user: {
+        id: "mock-user-1",
+        email: "mock.user@example.com",
+        nickName: "Mock User",
+        givenName: "Mock",
+        familyName: "User",
+        authProvider: "google",
+        idInProvider: "ggl-mock-user-1"
+      }
+    };
   };
 
   const signInWithAppleAsync = async (appleAuthCredential: AppleAuthenticationCredential): Promise<SignInModel> => {
@@ -105,6 +124,9 @@ export default function useSignInClient(): SignInClient {
     logger.logException(new AppError("Unexpected error", error));
   };
 
-  return { signInWithGoogleAsync, signInWithAppleAsync, refreshTokenAsync };
+  return {
+    signInWithGoogleAsync: googleSignInMock ? mockSignInWithGoogleAsync : signInWithGoogleAsync,
+    signInWithAppleAsync,
+    refreshTokenAsync
+  };
 }
-
