@@ -18,11 +18,51 @@ Internal iOS builds need devices registered in your Expo account. To install the
 npx eas-cli@16.32.0 device:create
 ```
 
-#### Channels
-Builds configured with a channel (like `staging` or `production` in eas.json) will fetch updates published to that same channel, so `production` devices don’t accidentally get `staging` updates. They are not needed for `development`.
+#### Configure app updates
+When only typescript code changes (no native code or native plugin added), a new build is not required. Instead an update is published and the apps just fetch the latest.
+Builds configured with a channel (like `staging` or `production` in eas.json) will fetch updates published to that same channel (so `production` devices don’t accidentally get `staging` updates). Updates are not needed for `development`, since development runs from local code.
+
+Docs:
+- [EAS Update (getting started)](https://docs.expo.dev/eas-update/getting-started/)
+- [Builds and updates](https://docs.expo.dev/build/updates/)
+- [`app.config` updates config](https://docs.expo.dev/versions/latest/config/app/#updates)
+- [Expo FYI: EAS Update config](https://github.com/expo/fyi/blob/main/eas-update-config.md)
+
+This is handled by `expo-updates` package (already included)
+
+##### Create channels (first time)
+
 ```bash
 npx eas-cli@16.32.0 channel:create staging
 npx eas-cli@16.32.0 channel:create production
+```
+
+In `eas.json`, each build profile specifies its channel (staging/production). Publish updates to a branch and point the channel to it (by convention, same name).
+
+##### Configure updates in app
+
+In `app.config.ts`, this template uses:
+
+```json
+{
+  "updates": {
+    "url": "https://u.expo.dev/<EAS ProjectId>",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 5000
+  },
+  "runtimeVersion": {
+    "policy": "appVersion"
+  }
+}
+```
+
+##### Publish update
+
+This template's `app.config.ts` is dynamic and depends on `EXPO_PUBLIC_BUILD_ENVIRONMENT`. Set it explicitly when publishing, or you may publish with the wrong environment config:
+
+```bash
+EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npx eas-cli@16.32.0 update --branch staging --message "MESSAGE"
+EXPO_PUBLIC_BUILD_ENVIRONMENT=production npx eas-cli@16.32.0 update --branch production --message "MESSAGE"
 ```
 
 ## Project configuration

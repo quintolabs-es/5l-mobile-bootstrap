@@ -28,6 +28,8 @@ const appScheme = isDev ? "__APP_ID__-dev" : isStg ? "__APP_ID__-stg" : "__APP_I
 
 const packageId = isDev ? "__BUNDLE_ID_BASE__.dev" : isStg ? "__BUNDLE_ID_BASE__.stg" : "__BUNDLE_ID_BASE__";
 
+const easProjectId = "PLACEHOLDER_EAS_PROJECT_ID";
+
 // Must match the reverse client ID created in Google Cloud (iOS). Keep placeholders until configured.
 const googleOAuthReverseUrlSchemeForIos = isDev
   ? "com.googleusercontent.apps.PLACEHOLDER_IOS_URL_SCHEME_DEV"
@@ -66,9 +68,18 @@ const config: ExpoConfig = {
   android: {
     package: packageId
   },
+  updates: {
+    enabled: true,
+    url: `https://u.expo.dev/${easProjectId}`,
+    checkAutomatically: "ON_LOAD",
+    fallbackToCacheTimeout: 5000
+  },
+  runtimeVersion: {
+    policy: "appVersion"
+  },
   extra: {
     eas: {
-      projectId: "PLACEHOLDER_EAS_PROJECT_ID"
+      projectId: easProjectId
     }
   }
 };
