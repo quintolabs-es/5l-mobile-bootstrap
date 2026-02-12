@@ -195,6 +195,46 @@ const selectMobileAppEntrypoint = (mobileRoot, authMode) => {
   }
 };
 
+const selectMobileAuthModeFiles = (mobileRoot, authMode) => {
+  const componentsDir = path.join(mobileRoot, "src", "components");
+
+  const requiredHeaderAvatarButtonPath = path.join(componentsDir, "HeaderAvatarButton.required.tsx");
+  const optionalHeaderAvatarButtonPath = path.join(componentsDir, "HeaderAvatarButton.optional.tsx");
+  const headerAvatarButtonPath = path.join(componentsDir, "HeaderAvatarButton.tsx");
+
+  const headerSourcePath = authMode === "optional" ? optionalHeaderAvatarButtonPath : requiredHeaderAvatarButtonPath;
+  if (!fs.existsSync(headerSourcePath)) {
+    die(`Missing ${headerSourcePath}`);
+  }
+
+  fs.copyFileSync(headerSourcePath, headerAvatarButtonPath);
+
+  if (fs.existsSync(requiredHeaderAvatarButtonPath)) {
+    fs.unlinkSync(requiredHeaderAvatarButtonPath);
+  }
+  if (fs.existsSync(optionalHeaderAvatarButtonPath)) {
+    fs.unlinkSync(optionalHeaderAvatarButtonPath);
+  }
+
+  const loginDir = path.join(mobileRoot, "src", "screens", "login");
+  const loginScreenPath = path.join(loginDir, "LoginScreen.tsx");
+  const loginSlidingModalPath = path.join(loginDir, "LoginSlidingModal.tsx");
+  const loginModalStylesPath = path.join(loginDir, "loginModalStyles.ts");
+  const slidingModalPath = path.join(mobileRoot, "src", "screens", "modal", "SlidingModal.tsx");
+
+  if (authMode === "required") {
+    for (const p of [loginSlidingModalPath, loginModalStylesPath, slidingModalPath]) {
+      if (fs.existsSync(p)) {
+        fs.unlinkSync(p);
+      }
+    }
+  } else {
+    if (fs.existsSync(loginScreenPath)) {
+      fs.unlinkSync(loginScreenPath);
+    }
+  }
+};
+
 const writeMobileEnvFileIfMissing = (mobileRoot) => {
   const examplePath = path.join(mobileRoot, ".env.example");
   const envPath = path.join(mobileRoot, ".env");
@@ -461,6 +501,7 @@ const main = () => {
 
   copyDir(templatesMobile, mobileRoot);
   selectMobileAppEntrypoint(mobileRoot, authMode);
+  selectMobileAuthModeFiles(mobileRoot, authMode);
   writeMobileEnvFileIfMissing(mobileRoot);
   copyDir(templatesWebapi, webapiRoot);
   applyWebapiOptionalOverlays(webapiRoot, { withMongo, withS3 });
