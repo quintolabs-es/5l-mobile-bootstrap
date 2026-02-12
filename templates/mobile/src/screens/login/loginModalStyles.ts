@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
 
+import { appStylesConstants } from "../../styles/appStylesConstants";
+
 export default StyleSheet.create({
   container: {
-    gap: 12,
-    padding: 16
+    gap: appStylesConstants.spacing.md,
+    padding: appStylesConstants.spacing.lg
   },
   appleLoginButton: {
     width: "100%",
-    height: 44
+    height: appStylesConstants.sizes.primaryButtonHeight
   }
 });
-

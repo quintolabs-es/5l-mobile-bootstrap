@@ -1,11 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { useAuth } from "../../providers/AuthProvider";
 import { useLogger } from "../../providers/LoggerProvider";
 import { AppError } from "../../AppError";
+import { appStylesConstants } from "../../styles/appStylesConstants";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: appStylesConstants.colors.background,
+    paddingHorizontal: appStylesConstants.spacing.xl,
+    justifyContent: "center"
+  },
+  title: {
+    fontSize: appStylesConstants.text.title,
+    fontWeight: "800",
+    color: appStylesConstants.colors.textPrimary
+  },
+  intro: {
+    marginTop: appStylesConstants.spacing.md,
+    marginBottom: appStylesConstants.spacing.xl,
+    fontSize: appStylesConstants.text.body,
+    color: appStylesConstants.colors.textSecondary,
+    lineHeight: appStylesConstants.text.bodyLineHeight
+  },
+  appleButtonContainer: {
+    marginTop: appStylesConstants.spacing.md
+  },
+  appleButton: {
+    width: "100%",
+    height: appStylesConstants.sizes.primaryButtonHeight
+  },
+  activityIndicator: {
+    marginTop: appStylesConstants.spacing.lg
+  }
+});
 
 const LoginScreen: React.FC = () => {
   const logger = useLogger();
@@ -48,9 +80,9 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff", paddingHorizontal: 24, justifyContent: "center" }}>
-      <Text style={{ fontSize: 34, fontWeight: "800", color: "#111" }}>__APP_DISPLAY_NAME__</Text>
-      <Text style={{ marginTop: 12, marginBottom: 24, fontSize: 16, color: "#666", lineHeight: 22 }}>
+    <View style={styles.container}>
+      <Text style={styles.title}>__APP_DISPLAY_NAME__</Text>
+      <Text style={styles.intro}>
         Welcome to __APP_DISPLAY_NAME__. Sign in to personalize your experience and continue.
       </Text>
 
@@ -62,18 +94,20 @@ const LoginScreen: React.FC = () => {
       />
 
       {isAppleAuthAvailable && (
-        <View style={{ marginTop: 12 }}>
+        <View style={styles.appleButtonContainer}>
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
             buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-            cornerRadius={6}
-            style={{ width: "100%", height: 44 }}
+            cornerRadius={appStylesConstants.radii.sm}
+            style={styles.appleButton}
             onPress={signInWithAppleAsync}
           />
         </View>
       )}
 
-      {isSigninInProgress && <ActivityIndicator style={{ marginTop: 16 }} />}
+      {isSigninInProgress && (
+        <ActivityIndicator style={styles.activityIndicator} color={appStylesConstants.activityIndicator.color} />
+      )}
     </View>
   );
 };

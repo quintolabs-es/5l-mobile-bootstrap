@@ -3,15 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { useAuth } from "../providers/AuthProvider";
 import LoginSlidingModal from "../screens/login/LoginSlidingModal";
-
-const circleStyle = {
-  width: 34,
-  height: 34,
-  borderRadius: 17,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#111"
-} as const;
+import { appGlobalStyles } from "../styles/appGlobalStyles";
 
 const HeaderAvatarButton: React.FC = () => {
   const { currentUser } = useAuth();
@@ -35,8 +27,8 @@ const HeaderAvatarButton: React.FC = () => {
 
   return (
     <View>
-      <Pressable onPress={onPress} style={circleStyle}>
-        <Text style={{ color: "#fff", fontWeight: "700" }}>{label}</Text>
+      <Pressable onPress={onPress} style={appGlobalStyles.avatarButton}>
+        <Text style={appGlobalStyles.avatarButtonText}>{label}</Text>
       </Pressable>
       <LoginSlidingModal
         loginModalVisible={loginVisible}

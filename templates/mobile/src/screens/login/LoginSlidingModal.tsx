@@ -6,6 +6,7 @@ import * as AppleAuthentication from "expo-apple-authentication";
 import { useAuth } from "../../providers/AuthProvider";
 import { useLogger } from "../../providers/LoggerProvider";
 import { AppError } from "../../AppError";
+import { appStylesConstants } from "../../styles/appStylesConstants";
 import SlidingModal from "../modal/SlidingModal";
 import loginModalStyles from "./loginModalStyles";
 
@@ -74,7 +75,7 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
             buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-            cornerRadius={6}
+            cornerRadius={appStylesConstants.radii.sm}
             style={loginModalStyles.appleLoginButton}
             onPress={signInWithAppleAndCloseAsync}
           />
@@ -85,4 +86,3 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
 };
 
 export default LoginSlidingModal;
-

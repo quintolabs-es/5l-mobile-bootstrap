@@ -196,6 +196,13 @@ const selectMobileAppEntrypoint = (mobileRoot, authMode) => {
 };
 
 const selectMobileAuthModeFiles = (mobileRoot, authMode) => {
+  const removeDirIfEmpty = (dir) => {
+    if (!fs.existsSync(dir)) return;
+    if (!fs.statSync(dir).isDirectory()) return;
+    if (fs.readdirSync(dir).length !== 0) return;
+    fs.rmdirSync(dir);
+  };
+
   const componentsDir = path.join(mobileRoot, "src", "components");
 
   const requiredHeaderAvatarButtonPath = path.join(componentsDir, "HeaderAvatarButton.required.tsx");
@@ -221,6 +228,7 @@ const selectMobileAuthModeFiles = (mobileRoot, authMode) => {
   const loginSlidingModalPath = path.join(loginDir, "LoginSlidingModal.tsx");
   const loginModalStylesPath = path.join(loginDir, "loginModalStyles.ts");
   const slidingModalPath = path.join(mobileRoot, "src", "screens", "modal", "SlidingModal.tsx");
+  const modalDir = path.dirname(slidingModalPath);
 
   if (authMode === "required") {
     for (const p of [loginSlidingModalPath, loginModalStylesPath, slidingModalPath]) {
@@ -228,6 +236,8 @@ const selectMobileAuthModeFiles = (mobileRoot, authMode) => {
         fs.unlinkSync(p);
       }
     }
+
+    removeDirIfEmpty(modalDir);
   } else {
     if (fs.existsSync(loginScreenPath)) {
       fs.unlinkSync(loginScreenPath);
