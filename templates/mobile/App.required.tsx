@@ -24,17 +24,13 @@ const RootNavigator: React.FC = () => {
   const { currentUser } = useAuth();
   const isSignedIn = !!currentUser;
 
-  if (!isSignedIn) {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    );
-  }
-
-  return (
+  return isSignedIn ? (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ title: "__APP_DISPLAY_NAME__" }} />
+    </Stack.Navigator>
+  ) : (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
