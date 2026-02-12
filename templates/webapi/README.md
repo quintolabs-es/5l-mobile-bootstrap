@@ -18,11 +18,12 @@ The app loads `appsettings.json` plus `appsettings.{environment}.json`.
 ### `src/appsettings.[environment].json`
 
 - `Auth:GoogleClientId` — Google OAuth client id used to validate Google `idToken` 
+- `Auth:MockGoogleSignIn` — Optional. If `true`, `/signin/google` bypasses Google token validation and uses the provided user payload.
 - `Sentry:Dsn` — Sentry DSN. Keep empty in development to disable Sentry.
 
 ### Environment variables (recommended for secrets)
 
-ASP.NET Core reads environment variables by default. Use `__` for nesting (example: `Auth__JwtSigningKey` maps to `Auth:JwtSigningKey`).
+ASP.NET Core reads environment variables by default and overrides corresponding appsetting. Use `__` for nesting (example: `Auth__JwtSigningKey` maps to `Auth:JwtSigningKey`).
 
 - `Auth__JwtIssuer`
 - `Auth__JwtAudience`
