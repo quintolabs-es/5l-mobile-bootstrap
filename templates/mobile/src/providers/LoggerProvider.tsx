@@ -18,7 +18,7 @@ export const useLogger = (): LoggerContextType => {
 };
 
 export const LoggerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const isSentryInitialized = !!Sentry.getCurrentScope();
+  const isSentryInitialized = !!Sentry.getClient();
 
   const sentryLogger: LoggerContextType = {
     logMessage: (message: string) => Sentry.captureMessage(message),
