@@ -2,25 +2,25 @@ import { ExpoConfig } from "expo/config";
 import { withSentry } from "@sentry/react-native/expo";
 
 const VALID_ENVIRONMENTS = ["development", "staging", "production"] as const;
-type BuildEnvironment = (typeof VALID_ENVIRONMENTS)[number];
+type Environment = (typeof VALID_ENVIRONMENTS)[number];
 
-const buildEnvironmentName = process.env.EXPO_PUBLIC_BUILD_ENVIRONMENT as BuildEnvironment | undefined;
+const environmentName = process.env.EXPO_PUBLIC_ENVIRONMENT as Environment | undefined;
 
-if (!buildEnvironmentName) {
+if (!environmentName) {
   throw new Error(
-    `[app.config] EXPO_PUBLIC_BUILD_ENVIRONMENT is not set. Expected one of: ${VALID_ENVIRONMENTS.join(", ")}`
+    `[app.config] EXPO_PUBLIC_ENVIRONMENT is not set. Expected one of: ${VALID_ENVIRONMENTS.join(", ")}`
   );
 }
 
-if (!VALID_ENVIRONMENTS.includes(buildEnvironmentName)) {
+if (!VALID_ENVIRONMENTS.includes(environmentName)) {
   throw new Error(
-    `[app.config] Invalid EXPO_PUBLIC_BUILD_ENVIRONMENT="${buildEnvironmentName}". Expected one of: ${VALID_ENVIRONMENTS.join(", ")}`
+    `[app.config] Invalid EXPO_PUBLIC_ENVIRONMENT="${environmentName}". Expected one of: ${VALID_ENVIRONMENTS.join(", ")}`
   );
 }
 
-const isDev = buildEnvironmentName === "development";
-const isStg = buildEnvironmentName === "staging";
-const isPro = buildEnvironmentName === "production";
+const isDev = environmentName === "development";
+const isStg = environmentName === "staging";
+const isPro = environmentName === "production";
 
 const name = isDev ? "__APP_DISPLAY_NAME__ DEV" : isStg ? "__APP_DISPLAY_NAME__ STG" : "__APP_DISPLAY_NAME__";
 
@@ -50,6 +50,14 @@ const config: ExpoConfig = {
       "@react-native-google-signin/google-signin",
       {
         iosUrlScheme: googleOAuthReverseUrlSchemeForIos
+      }
+    ],
+    [
+      "expo-splash-screen",
+      {
+        backgroundColor: "#faf9f6",
+        // image: "./assets/splash.png",
+        resizeMode: "contain"
       }
     ]
   ],

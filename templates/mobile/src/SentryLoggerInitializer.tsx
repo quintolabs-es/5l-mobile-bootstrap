@@ -1,15 +1,17 @@
 import * as Sentry from "@sentry/react-native";
 import { Platform } from "react-native";
-import { buildEnvironment } from "./BuildEnvironment";
+
+import { getResolvedEnvironment } from "./providers/ConfigurationProvider";
 
 const initializeSentryIfIsNotDev = () => {
-  const sendEventsToSentry = buildEnvironment.isStaging || buildEnvironment.isProduction;
+  const environment = getResolvedEnvironment();
+  const sendEventsToSentry = environment.isStaging || environment.isProduction;
 
   if (sendEventsToSentry) {
     Sentry.init({
       dsn: "PLACEHOLDER_SENTRY_DSN",
       sendDefaultPii: true,
-      environment: buildEnvironment.buildEnvironmentName
+      environment: environment.environmentName
     });
 
     Sentry.setContext("os", { name: Platform.OS });
@@ -21,4 +23,3 @@ const initializeSentryIfIsNotDev = () => {
 };
 
 export default initializeSentryIfIsNotDev;
-

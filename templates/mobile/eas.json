@@ -8,20 +8,20 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_BUILD_ENVIRONMENT": "development"
+        "EXPO_PUBLIC_ENVIRONMENT": "development"
       }
     },
     "staging": {
       "channel": "staging",
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_BUILD_ENVIRONMENT": "staging"
+        "EXPO_PUBLIC_ENVIRONMENT": "staging"
       }
     },
     "production": {
       "channel": "production",
       "env": {
-        "EXPO_PUBLIC_BUILD_ENVIRONMENT": "production"
+        "EXPO_PUBLIC_ENVIRONMENT": "production"
       }
     }
   }

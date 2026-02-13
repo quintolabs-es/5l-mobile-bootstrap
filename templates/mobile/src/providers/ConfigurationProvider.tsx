@@ -1,20 +1,62 @@
 import React, { createContext, ReactNode, useCallback, useContext, useMemo } from "react";
 import Constants from "expo-constants";
 
-import { BuildEnvironment, getBuildEnvironment } from "../BuildEnvironment";
+const VALID_ENVIRONMENTS = ["development", "staging", "production"] as const;
+export type EnvironmentName = (typeof VALID_ENVIRONMENTS)[number];
+
+export type Environment = Readonly<{
+  environmentName: EnvironmentName;
+  isDevelopment: boolean;
+  isStaging: boolean;
+  isProduction: boolean;
+}>;
+
+const resolveEnvironmentName = (): EnvironmentName => {
+  const raw = process.env.EXPO_PUBLIC_ENVIRONMENT;
+  if (raw && (VALID_ENVIRONMENTS as readonly string[]).includes(raw)) {
+    return raw as EnvironmentName;
+  }
+
+  throw new Error(
+    [
+      "[Environment] EXPO_PUBLIC_ENVIRONMENT is missing or invalid.",
+      `Received: ${JSON.stringify(raw)}.`,
+      `Expected one of: ${VALID_ENVIRONMENTS.join(", ")}.`,
+      "Set EXPO_PUBLIC_ENVIRONMENT in your environment variables or .env file before running the app."
+    ].join(" ")
+  );
+};
+
+let cachedEnvironment: Environment | null = null;
+
+export const getResolvedEnvironment = (): Environment => {
+  if (cachedEnvironment) {
+    return cachedEnvironment;
+  }
+
+  const environmentName = resolveEnvironmentName();
+  cachedEnvironment = {
+    environmentName,
+    isDevelopment: environmentName === "development",
+    isStaging: environmentName === "staging",
+    isProduction: environmentName === "production"
+  };
+
+  return cachedEnvironment;
+};
 
 export type AppConfig = Readonly<{
   apiBaseUrl: string;
   isDevelopment: boolean;
   isStaging: boolean;
   isProduction: boolean;
-  mockSignInEnabled: boolean;
 }>;
 
 export type GoogleSignInConfig = Readonly<{
   webClientId: string;
   iosClientId: string;
   scopes: string[];
+  mockEnabled?: boolean;
 }>;
 
 export type ExpoPlatformConfig = Readonly<{
@@ -22,7 +64,7 @@ export type ExpoPlatformConfig = Readonly<{
 }>;
 
 export type ConfigurationContextType = Readonly<{
-  getEnvironmentConfig: () => BuildEnvironment;
+  getEnvironmentConfig: () => Environment;
   getAppConfig: () => AppConfig;
   getGoogleSignInConfig: () => GoogleSignInConfig;
   getExpoPlatformConfig: () => ExpoPlatformConfig;
@@ -39,11 +81,11 @@ export const useConfiguration = (): ConfigurationContextType => {
 };
 
 export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const environment = useMemo(() => getBuildEnvironment(), []);
-  const { buildEnvironmentName, isDevelopment, isStaging, isProduction } = environment;
+  const environment = useMemo((): Environment => getResolvedEnvironment(), []);
+  const { environmentName, isDevelopment, isStaging, isProduction } = environment;
 
   // Note: Cannot use useLogger here as this provider is initialized before LoggerProvider
-  console.log(`Running ConfigurationProvider on buildEnvironment ${JSON.stringify(buildEnvironmentName)}`);
+  console.log(`Running ConfigurationProvider on environment ${JSON.stringify(environmentName)}`);
 
   const appConfig: AppConfig = useMemo(() => {
     return {
@@ -54,8 +96,7 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
           : "PLACEHOLDER_WEBAPI_PROD_URL",
       isDevelopment,
       isStaging,
-      isProduction,
-      mockSignInEnabled: false
+      isProduction
     };
   }, [isDevelopment, isProduction, isStaging]);
 
@@ -71,7 +112,8 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
         : isStaging
           ? "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_STG"
           : "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_PROD",
-      scopes: ["email"]
+      scopes: ["email"],
+      mockEnabled: false
     };
   }, [isDevelopment, isStaging]);
 

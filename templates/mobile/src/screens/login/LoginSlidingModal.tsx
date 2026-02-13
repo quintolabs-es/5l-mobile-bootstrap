@@ -26,8 +26,8 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
   const [isSigninInProgress, setIsSignInInProgress] = useState(false);
   const [isAppleAuthAvailable, setIsAppleAuthAvailable] = useState<boolean>();
 
-  const { getAppConfig } = useConfiguration();
-  const { mockSignInEnabled } = getAppConfig();
+  const { getGoogleSignInConfig } = useConfiguration();
+  const { mockEnabled } = getGoogleSignInConfig();
 
   const { signInGoogleAsync, signInAppleAsync, mockSignInAsync } = useAuth();
   const logger = useLogger();
@@ -98,7 +98,7 @@ const LoginSlidingModal: React.FC<LoginModalProps> = ({
           />
         )}
 
-        {mockSignInEnabled && (
+        {mockEnabled && (
           <Pressable
             onPress={mockSignInAndCloseAsync}
             disabled={isSigninInProgress}
