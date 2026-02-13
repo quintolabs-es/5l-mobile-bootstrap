@@ -26,6 +26,7 @@ set -e
 # Final image refs:
 #   ghcr.io/quintolabs-es/org-appname-webapi:0.0.1
 #   ghcr.io/quintolabs-es/org-appname-webapi:latest
+
 if [ -f .env ]; then
   echo "Loading .env..."
   set -a

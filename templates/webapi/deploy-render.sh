@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Usage:
+#   bash deploy-render.sh --env development|staging|production
+
 # ===========================================================
 # Trigger a Render.com deployment (pull latest image).
 # ===========================================================
@@ -13,10 +16,14 @@ set -e
 #   RENDER_SERVICE_ID_PROD  Required. Render service id for production (srv-xxxxx)
 #   RENDER_DEPLOY_KEY_PROD  Required. Render deploy key for production
 #
-# Usage:
-#   bash deploy-render.sh --env staging
 
-ENVIRONMENT="staging"
+
+ENVIRONMENT=""
+
+if [ $# -eq 0 ]; then
+  echo "Missing --env value. Expected development|staging|production."
+  exit 1
+fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
