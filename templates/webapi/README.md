@@ -89,7 +89,7 @@ bash build-push-img.sh
 `.env` keys used by scripts:
 
 - `build-push-img.sh` — Required: `REGISTRY_PREFIX`, `REGISTRY_USERNAME`, `REGISTRY_TOKEN`. Optional: `IMAGE_NAME`, `IMAGE_TAG`, `DOCKER_DEFAULT_PLATFORM`.
-- `deploy-render.sh` (optional) — `RENDER_SERVICE_ID_DEV/STG/PROD`, `RENDER_DEPLOY_KEY_DEV/STG/PROD`.
+- `deploy-render.sh` (optional) — `RENDER_DEPLOY_HOOK_URL_DEV/STG/PROD`.
 
 Optional (Render example):
 

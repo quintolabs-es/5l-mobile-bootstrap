@@ -8,13 +8,10 @@ set -e
 # Trigger a Render.com deployment (pull latest image).
 # ===========================================================
 #
-# Reads from `.env` file if present:
-#   RENDER_SERVICE_ID_DEV   Required. Render service id for development (srv-xxxxx)
-#   RENDER_DEPLOY_KEY_DEV   Required. Render deploy key for development
-#   RENDER_SERVICE_ID_STG   Required. Render service id for staging (srv-xxxxx)
-#   RENDER_DEPLOY_KEY_STG   Required. Render deploy key for staging
-#   RENDER_SERVICE_ID_PROD  Required. Render service id for production (srv-xxxxx)
-#   RENDER_DEPLOY_KEY_PROD  Required. Render deploy key for production
+# Reads from `.env` file:
+#   RENDER_DEPLOY_HOOK_URL_DEV   Required. Render deploy hook URL for development
+#   RENDER_DEPLOY_HOOK_URL_STG   Required. Render deploy hook URL for staging
+#   RENDER_DEPLOY_HOOK_URL_PROD  Required. Render deploy hook URL for production
 #
 
 
@@ -70,23 +67,13 @@ if [ -f .env ]; then
   set +a
 fi
 
-service_var="RENDER_SERVICE_ID_${SUFFIX}"
-deploy_key_var="RENDER_DEPLOY_KEY_${SUFFIX}"
+deploy_hook_var="RENDER_DEPLOY_HOOK_URL_${SUFFIX}"
+url="${!deploy_hook_var}"
 
-service_id="${!service_var}"
-deploy_key="${!deploy_key_var}"
-
-if [ -z "$service_id" ]; then
-  echo "Missing ${service_var}."
+if [ -z "$url" ]; then
+  echo "Missing ${deploy_hook_var}."
   exit 1
 fi
-
-if [ -z "$deploy_key" ]; then
-  echo "Missing ${deploy_key_var}."
-  exit 1
-fi
-
-url="https://api.render.com/deploy/${service_id}?key=${deploy_key}"
 
 echo "Triggering Render deploy (${ENVIRONMENT})..."
 response=$(curl -s -w "\n%{http_code}" -X POST "$url")

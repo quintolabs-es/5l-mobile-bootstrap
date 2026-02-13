@@ -51,11 +51,11 @@ Expo GO will not work because there are native plugins added to the app already 
 cd __APP_ID__-mobile
 npm install
 
-npx eas-cli@16.32.0 build --platform android --profile development
+npx eas-cli@16.32.0 build --platform android --profile development --clear-cache
 > Generate a new Android Keystore? - Y
 
 # or
-npx eas-cli@16.32.0 build --platform ios --profile development
+npx eas-cli@16.32.0 build --platform ios --profile development --clear-cache
 ```
 Follow up the build in the terminal or in `expo.dev`. 
 When ready, download and install the app on the device, and ready to run locally.
@@ -80,7 +80,7 @@ EXPO_PUBLIC_ENVIRONMENT=production npm run start
 ## Build staging/production
 
 ```bash
-EXPO_PUBLIC_ENVIRONMENT=staging npx eas-cli@16.32.0 build --platform all --profile staging
+EXPO_PUBLIC_ENVIRONMENT=staging npx eas-cli@16.32.0 build --platform all --profile staging --clear-cache
 ```
 
 #### Configure app updates
@@ -126,8 +126,8 @@ In `app.config.ts`, this template uses:
 This template's `app.config.ts` is dynamic and depends on `EXPO_PUBLIC_BUILD_ENVIRONMENT`. Set it explicitly when publishing, or you may publish with the wrong environment config:
 
 ```bash
-EXPO_PUBLIC_BUILD_ENVIRONMENT=staging npx eas-cli@16.32.0 update --branch staging --message "MESSAGE"
-EXPO_PUBLIC_BUILD_ENVIRONMENT=production npx eas-cli@16.32.0 update --branch production --message "MESSAGE"
+EXPO_PUBLIC_ENVIRONMENT=staging npx eas-cli@16.32.0 update --branch staging --message "MESSAGE" --clear-cache
+EXPO_PUBLIC_ENVIRONMENT=production npx eas-cli@16.32.0 update --branch production --message "MESSAGE" --clear-cache
 ```
 
 
