@@ -30,7 +30,7 @@ Created automatically for development.
 - `PLACEHOLDER_WEBAPI_DEV_URL/STG/PROD` — WebApi base URL (use a deployed URL; `localhost` won't work on a real device)
 - `PLACEHOLDER_GOOGLE_WEB_CLIENT_ID_DEV/STG/PROD` — Google OAuth web client id 
 - `PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_DEV/STG/PROD` — Google OAuth iOS client id 
-- `mockSignInEnabled` — optional dev helper; when true, shows a "Mock Sign In" button to bypass native login
+- `mockSignInEnabled` — dev-only helper; true in development to show a "Mock Sign In" button that bypasses native login
 
 #### `app.config.ts`
 
@@ -42,6 +42,10 @@ Created automatically for development.
 #### `src/SentryLoggerInitializer.tsx`
 
 - `PLACEHOLDER_SENTRY_DSN` — Sentry DSN (events in staging/production only)
+
+#### Mock sign-in (dev only)
+- The "Mock Sign In" button is enabled only in development.
+- Backend must allow it with `ENABLE_GOOGLE_SIGN_IN_ENDPOINT_IN_DEV=true` and the `POST /mock/auth/google` endpoint.
 
 ## Run development app locally
 #### Create and install a build

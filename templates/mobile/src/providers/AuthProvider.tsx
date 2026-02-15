@@ -113,22 +113,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const mockSignInAsync = async (): Promise<void> => {
-    const signInModel: SignInModel = {
-      tokens: {
-        accessToken: "mock-access-token",
-        refreshToken: "mock-refresh-token"
-      },
-      user: {
-        id: "mock-user-1",
-        email: "mock.user@example.com",
-        nickName: "Mock User",
-        givenName: "Mock",
-        familyName: "User",
-        authProvider: "google",
-        idInProvider: "ggl-mock-user-1"
-      }
-    };
-
+    const signInModel = await signInClient.signInMockGoogleAsync();
     await signInLocalClientAsync(signInModel);
   };
 

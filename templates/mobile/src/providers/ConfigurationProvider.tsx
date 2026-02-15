@@ -50,13 +50,13 @@ export type AppConfig = Readonly<{
   isDevelopment: boolean;
   isStaging: boolean;
   isProduction: boolean;
+  mockSignInEnabled: boolean;
 }>;
 
 export type GoogleSignInConfig = Readonly<{
   webClientId: string;
   iosClientId: string;
   scopes: string[];
-  mockEnabled?: boolean;
 }>;
 
 export type ExpoPlatformConfig = Readonly<{
@@ -96,7 +96,8 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
           : "PLACEHOLDER_WEBAPI_PROD_URL",
       isDevelopment,
       isStaging,
-      isProduction
+      isProduction,
+      mockSignInEnabled: isDevelopment
     };
   }, [isDevelopment, isProduction, isStaging]);
 
@@ -112,8 +113,7 @@ export const ConfigurationProvider: React.FC<{ children: ReactNode }> = ({ child
         : isStaging
           ? "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_STG"
           : "PLACEHOLDER_GOOGLE_IOS_CLIENT_ID_PROD",
-      scopes: ["email"],
-      mockEnabled: false
+      scopes: ["email"]
     };
   }, [isDevelopment, isStaging]);
 

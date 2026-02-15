@@ -11,12 +11,12 @@ interface SignInClient {
   signInWithGoogleAsync: (userInfo: GoogleUser) => Promise<SignInModel>;
   signInWithAppleAsync: (appleAuthCredential: AppleAuthenticationCredential) => Promise<SignInModel>;
   refreshTokenAsync: (tokens: TokensModel) => Promise<TokensModel | null>;
+  signInMockGoogleAsync: () => Promise<SignInModel>;
 }
 
 export default function useSignInClient(): SignInClient {
-  const { getAppConfig, getGoogleSignInConfig } = useConfiguration();
+  const { getAppConfig } = useConfiguration();
   const { apiBaseUrl } = getAppConfig();
-  const { mockEnabled } = getGoogleSignInConfig();
   const logger = useLogger();
 
   const apiClient: AxiosInstance = axios.create({ baseURL: apiBaseUrl });
@@ -46,24 +46,6 @@ export default function useSignInClient(): SignInClient {
       captureHttpError(error);
       throw error;
     }
-  };
-
-  const mockSignInWithGoogleAsync = async (): Promise<SignInModel> => {
-    return {
-      tokens: {
-        accessToken: "mock-access-token",
-        refreshToken: "mock-refresh-token"
-      },
-      user: {
-        id: "mock-user-1",
-        email: "mock.user@example.com",
-        nickName: "Mock User",
-        givenName: "Mock",
-        familyName: "User",
-        authProvider: "google",
-        idInProvider: "ggl-mock-user-1"
-      }
-    };
   };
 
   const signInWithAppleAsync = async (appleAuthCredential: AppleAuthenticationCredential): Promise<SignInModel> => {
@@ -107,6 +89,16 @@ export default function useSignInClient(): SignInClient {
     }
   };
 
+  const signInMockGoogleAsync = async (): Promise<SignInModel> => {
+    try {
+      const response = await apiClient.post<SignInModel>("/mock/auth/google");
+      return response.data;
+    } catch (error) {
+      captureHttpError(error);
+      throw error;
+    }
+  };
+
   const captureHttpError = (error: unknown): void => {
     if (axios.isAxiosError(error)) {
       const axiosError: AxiosError = error;
@@ -125,8 +117,9 @@ export default function useSignInClient(): SignInClient {
   };
 
   return {
-    signInWithGoogleAsync: mockEnabled ? mockSignInWithGoogleAsync : signInWithGoogleAsync,
+    signInWithGoogleAsync,
     signInWithAppleAsync,
-    refreshTokenAsync
+    refreshTokenAsync,
+    signInMockGoogleAsync
   };
 }

@@ -18,7 +18,6 @@ The app loads `appsettings.json` plus `appsettings.{environment}.json`.
 ### `src/appsettings.[environment].json`
 
 - `Auth:GoogleClientId` — Google OAuth client id used to validate Google `idToken` 
-- `Auth:MockGoogleSignIn` — Optional. If `true`, `/signin/google` bypasses Google token validation and uses the provided user payload.
 - `Sentry:Dsn` — Sentry DSN. Keep empty in development to disable Sentry.
 
 ### Environment variables (recommended for secrets)
@@ -29,6 +28,7 @@ ASP.NET Core reads environment variables by default and overrides corresponding 
 - `Auth__JwtAudience`
 - `Auth__JwtSigningKey` (secret)
 - `Auth__GoogleClientId`
+- `ENABLE_GOOGLE_SIGN_IN_ENDPOINT_IN_DEV` — Enables `POST /mock/auth/google` in development only.
 - `Sentry__Dsn`
 - Optional Mongo (only if generated): `Mongo__ConnectionString` (secret), `Mongo__DatabaseName`
 - Optional S3 (only if generated): `S3__ServiceUrl`, `S3__AccessKeyId`, `S3__SecretAccessKey` (secret), `S3__BucketName`, `S3__PublicUrl`

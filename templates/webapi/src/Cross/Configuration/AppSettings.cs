@@ -6,6 +6,7 @@ public partial class AppSettings
     public AppInfo App { get; set; } = new();
     public AuthSettings Auth { get; set; } = new();
     public SentrySettings Sentry { get; set; } = new();
+    public bool EnableGoogleSignInEndpointInDev { get; set; }
 
     public bool IsDevelopment => Environment == "development";
     public bool IsStaging => Environment == "staging";
@@ -20,7 +21,6 @@ public class AppInfo
 
 public class AuthSettings
 {
-    public bool MockGoogleSignIn { get; set; }
     public string GoogleClientId { get; set; } = string.Empty;
     public string JwtIssuer { get; set; } = string.Empty;
     public string JwtAudience { get; set; } = string.Empty;

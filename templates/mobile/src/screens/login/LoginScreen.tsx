@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
 
 const LoginScreen: React.FC = () => {
   const logger = useLogger();
-  const { getGoogleSignInConfig } = useConfiguration();
-  const { mockEnabled } = getGoogleSignInConfig();
+  const { getAppConfig } = useConfiguration();
+  const { mockSignInEnabled } = getAppConfig();
 
   const { signInGoogleAsync, signInAppleAsync, mockSignInAsync } = useAuth();
 
@@ -124,7 +124,7 @@ const LoginScreen: React.FC = () => {
         </View>
       )}
 
-      {mockEnabled && (
+      {mockSignInEnabled && (
         <View style={styles.mockSignInContainer}>
           <Pressable
             onPress={mockSignInAsyncAndContinue}
