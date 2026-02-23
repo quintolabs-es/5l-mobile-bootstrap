@@ -4,6 +4,18 @@ import { withSentry } from "@sentry/react-native/expo";
 const VALID_ENVIRONMENTS = ["development", "staging", "production"] as const;
 type Environment = (typeof VALID_ENVIRONMENTS)[number];
 
+// Versioning strategy:
+// - APP_VERSION: bump for every store release (user-visible version).
+// - IOS_BUILD_NUMBER: must increase for every iOS upload, or App Store will reject it.
+// - ANDROID_VERSION_CODE: must increase for every Android upload, or Play will reject it.
+// - RUNTIME_VERSION: OTA compatibility key; bump only when native code/config changes.
+//   If you don't bump when native changes, OTA updates can break older builds.
+//   If you bump without shipping a new build, OTA updates won't apply to existing installs.
+const APP_VERSION = "0.0.1";
+const RUNTIME_VERSION = "1";
+const IOS_BUILD_NUMBER = "1";
+const ANDROID_VERSION_CODE = 1;
+
 const environmentName = process.env.EXPO_PUBLIC_ENVIRONMENT as Environment | undefined;
 
 if (!environmentName) {
@@ -41,6 +53,7 @@ const config: ExpoConfig = {
   name,
   slug: "__SLUG__",
   scheme: appScheme,
+  version: APP_VERSION,
   platforms: ["ios", "android"],
   orientation: "portrait",
   userInterfaceStyle: "automatic",
@@ -64,6 +77,7 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: packageId,
+    buildNumber: IOS_BUILD_NUMBER,
     infoPlist: {
       CFBundleURLTypes: [
         {
@@ -74,7 +88,8 @@ const config: ExpoConfig = {
     usesAppleSignIn: true
   },
   android: {
-    package: packageId
+    package: packageId,
+    versionCode: ANDROID_VERSION_CODE
   },
   updates: {
     enabled: true,
@@ -82,9 +97,7 @@ const config: ExpoConfig = {
     checkAutomatically: "ON_LOAD",
     fallbackToCacheTimeout: 5000
   },
-  runtimeVersion: {
-    policy: "appVersion"
-  },
+  runtimeVersion: RUNTIME_VERSION,
   extra: {
     eas: {
       projectId: easProjectId

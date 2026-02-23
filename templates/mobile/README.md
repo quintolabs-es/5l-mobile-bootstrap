@@ -81,6 +81,13 @@ EXPO_PUBLIC_ENVIRONMENT=staging npm run start
 EXPO_PUBLIC_ENVIRONMENT=production npm run start
 ```
 
+### Versioning strategy
+Versions are defined at the top of `app.config.ts`:
+- `APP_VERSION` → `version` (store version shown to users)
+- `IOS_BUILD_NUMBER` → `ios.buildNumber` (must increase every iOS upload)
+- `ANDROID_VERSION_CODE` → `android.versionCode` (must increase every Android upload)
+- `RUNTIME_VERSION` → `runtimeVersion` (OTA compatibility; OTA updates only apply to matching runtimeVersion; bump only for native changes)
+
 ## Build staging/production
 
 ```bash
@@ -127,7 +134,7 @@ In `app.config.ts`, this template uses:
 
 ##### Publish update
 
-This template's `app.config.ts` is dynamic and depends on `EXPO_PUBLIC_BUILD_ENVIRONMENT`. Set it explicitly when publishing, or you may publish with the wrong environment config:
+This template's `app.config.ts` is dynamic and depends on `EXPO_PUBLIC_ENVIRONMENT`. Set it explicitly when publishing, or you may publish with the wrong environment config:
 
 ```bash
 EXPO_PUBLIC_ENVIRONMENT=staging npx eas-cli@16.32.0 update --branch staging --message "MESSAGE" --clear-cache
